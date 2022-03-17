@@ -1,0 +1,9 @@
+bin/
+.settings/
+helm/
+k8s/
+target/
+.project
+docker-entrypoint.sh
+Dockerfile
+settings.xml
