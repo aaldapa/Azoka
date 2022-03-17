@@ -14,7 +14,6 @@ import java.nio.file.Files;
 import java.sql.Clob;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +37,7 @@ import es.eroski.azoka.dto.GenteReporte;
 import es.eroski.azoka.dto.Persona;
 import es.eroski.azoka.exceptions.CustomResponseStatusException;
 import es.eroski.azoka.report.service.ReportService;
+import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -92,6 +92,68 @@ public class GenteReporteController {
 
 	public byte[] generatePDFReport() {
 		byte[] bytes = null;
+
+		List<Persona> lstPersonas = Arrays.asList(new Persona(1, "Elena", "Nunez"), new Persona(2, "Jose", "Lema"));
+		List<Alumno> lstAlumnos = Arrays.asList(new Alumno(1, "Alberto", "Cuesta"), new Alumno(2, "Roberto", "Agirre"));
+
+		try (ByteArrayOutputStream byteArray = new ByteArrayOutputStream()) {
+
+			String reportHomePath = "src/main/resources/reports/";
+			File reportMainTemplate = ResourceUtils.getFile("classpath:reports/autofactura.jrxml");
+			JasperReport reportMain = JasperCompileManager.compileReport(reportMainTemplate.getAbsolutePath());
+			JRSaver.saveObject(reportMain,
+					reportHomePath.concat(reportMainTemplate.getName().replace("jrxml", "jasper")));
+			
+
+			byte[] imagenQrBA = reportService.getImagenQR();
+			byte[] imagenQrBAStatic =  this.getImagenQr();
+			Clob imagenQrClob = reportService.getImagenQRClob();
+			String imagenQrStr  = null;
+			InputStream imagenQrStream = null;
+			try {
+				
+				imagenQrStr= imagenQrClob.getSubString(1, (int) imagenQrClob.length());
+				imagenQrStream = new ByteArrayInputStream(org.apache.tomcat.util.codec.binary.Base64.decodeBase64(imagenQrStr.getBytes()));
+				
+
+				System.out.println("Stream: " + imagenQrStream);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		    File targetFile = new File("src/main/resources/imagen.png");
+		    OutputStream outStream = new FileOutputStream(targetFile);
+		    outStream.write(imagenQrBA);
+		    
+		    imagenQrBA = Files.readAllBytes(targetFile.toPath());
+		    
+		    IOUtils.closeQuietly(outStream);
+
+			Map<String, Object> parameters = new HashMap<>();
+			parameters.put("pDatasourceAlumno", lstAlumnos);
+			parameters.put("pDatasourcePersona", lstPersonas);
+
+			parameters.put("imagenQr", imagenQrStream);
+
+			JasperPrint jasperPrint = JasperFillManager.fillReport(reportMain, parameters, new JREmptyDataSource());
+			
+
+			// return the PDF in bytes
+			bytes = JasperExportManager.exportReportToPdf(jasperPrint);
+
+
+
+		} catch (JRException | IOException e) {
+			e.printStackTrace();
+		}
+
+		return bytes;
+
+	}
+
+	public byte[] generatePDFConSubReport() {
+		byte[] bytes = null;
 		JasperReport jasperReport = null;
 
 		var reportDataSource = new GenteReporte();
@@ -119,38 +181,37 @@ public class GenteReporteController {
 			JasperReport subreport2 = JasperCompileManager.compileReport(subreport2Template.getAbsolutePath());
 			String subreport2Path = reportHomePath.concat(subreport2Template.getName().replace("jrxml", "jasper"));
 			JRSaver.saveObject(subreport2, subreport2Path);
-			
+
 			File subreport3Template = ResourceUtils.getFile("classpath:reports/subreport_tabla.jrxml");
 			JasperReport subreport3 = JasperCompileManager.compileReport(subreport3Template.getAbsolutePath());
 			String subreport3Path = reportHomePath.concat(subreport3Template.getName().replace("jrxml", "jasper"));
 			JRSaver.saveObject(subreport3, subreport3Path);
-			
 
 			JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(jrBeanCollectionDataSource);
 			byte[] imagenQrBA = reportService.getImagenQR();
-			byte[] imagenQrBAStatic =  this.getImagenQr();
+			byte[] imagenQrBAStatic = this.getImagenQr();
 			Clob imagenQrClob = reportService.getImagenQRClob();
-			String imagenQrStr  = null;
+			String imagenQrStr = null;
 			InputStream imagenQrStream = null;
 			try {
-				
-				imagenQrStr= imagenQrClob.getSubString(1, (int) imagenQrClob.length());
-				imagenQrStream = new ByteArrayInputStream(org.apache.tomcat.util.codec.binary.Base64.decodeBase64(imagenQrStr.getBytes()));
-				
+
+				imagenQrStr = imagenQrClob.getSubString(1, (int) imagenQrClob.length());
+				imagenQrStream = new ByteArrayInputStream(
+						org.apache.tomcat.util.codec.binary.Base64.decodeBase64(imagenQrStr.getBytes()));
 
 				System.out.println("Stream: " + imagenQrStream);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-		    File targetFile = new File("src/main/resources/imagen.png");
-		    OutputStream outStream = new FileOutputStream(targetFile);
-		    outStream.write(imagenQrBA);
-		    
-		    imagenQrBA = Files.readAllBytes(targetFile.toPath());
-		    
-		    IOUtils.closeQuietly(outStream);
+
+			File targetFile = new File("src/main/resources/imagen.png");
+			OutputStream outStream = new FileOutputStream(targetFile);
+			outStream.write(imagenQrBA);
+
+			imagenQrBA = Files.readAllBytes(targetFile.toPath());
+
+			IOUtils.closeQuietly(outStream);
 
 			Map<String, Object> parameters = new HashMap<>();
 			parameters.put("report_sub1", subreport1Path);
@@ -164,8 +225,6 @@ public class GenteReporteController {
 			// return the PDF in bytes
 			bytes = JasperExportManager.exportReportToPdf(jasperPrint);
 
-
-
 		} catch (JRException | IOException e) {
 			e.printStackTrace();
 		}
@@ -173,7 +232,7 @@ public class GenteReporteController {
 		return bytes;
 
 	}
-	
+
 	private byte[] getImagenQr() {
 		String imagesHomePath = "src/main/resources/images/";
 
@@ -181,8 +240,8 @@ public class GenteReporteController {
 		byte[] fileContent = null;
 
 		try {
-			 System.out.println("Static en bytes[]: "+new String(Files.readAllBytes(fi.toPath())));
-			
+			System.out.println("Static en bytes[]: " + new String(Files.readAllBytes(fi.toPath())));
+
 			fileContent = Files.readAllBytes(fi.toPath());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -220,8 +279,5 @@ public class GenteReporteController {
 
 		return tmpFile;
 	}
-
-	
-
 
 }
