@@ -106,7 +106,6 @@ public class GenteReporteController {
 			
 
 			byte[] imagenQrBA = reportService.getImagenQR();
-			byte[] imagenQrBAStatic =  this.getImagenQr();
 			Clob imagenQrClob = reportService.getImagenQRClob();
 			String imagenQrStr  = null;
 			InputStream imagenQrStream = null;
