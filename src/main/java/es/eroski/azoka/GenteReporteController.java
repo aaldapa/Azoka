@@ -21,6 +21,9 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
@@ -61,6 +64,11 @@ import net.sf.jasperreports.export.SimplePdfReportConfiguration;
 @RequestMapping("/v1/gente")
 public class GenteReporteController {
 
+	private static final Logger logger = LoggerFactory.getLogger(GenteReporteController.class);
+	private static final org.apache.logging.log4j.Logger logger2 = LogManager.getLogger(GenteReporteController.class);
+	
+	
+	
 	@Autowired
 	ReportService reportService;
 
@@ -93,7 +101,7 @@ public class GenteReporteController {
 	public byte[] generatePDFReport() {
 		byte[] bytes = null;
 
-		List<Persona> lstPersonas = Arrays.asList(new Persona(1, "Elena", "Nunez"), new Persona(2, "Jose", "Lema"));
+		List<Persona> lstPersonas = Arrays.asList(new Persona(1, "Elena", "Nunez"), new Persona(2, "Jose", "Lema"), new Persona(3, "Endika", "Campo"), new Persona(4, "Roberto", "Castanedo"));
 		List<Alumno> lstAlumnos = Arrays.asList(new Alumno(1, "Alberto", "Cuesta"), new Alumno(2, "Roberto", "Agirre"));
 
 		try (ByteArrayOutputStream byteArray = new ByteArrayOutputStream()) {
@@ -130,6 +138,9 @@ public class GenteReporteController {
 		    IOUtils.closeQuietly(outStream);
 
 			Map<String, Object> parameters = new HashMap<>();
+			
+			parameters.put("logoEroskiPath", this.getLogoEroski());
+			
 			parameters.put("pDatasourceAlumno", lstAlumnos);
 			parameters.put("pDatasourcePersona", lstPersonas);
 
@@ -232,6 +243,25 @@ public class GenteReporteController {
 
 	}
 
+	private byte[] getLogoEroski() {
+		String imagesHomePath = "src/main/resources/images/";
+
+		File fi = new File(imagesHomePath.concat("logoEroski.png"));
+		byte[] fileContent = null;
+
+		try {
+			System.out.println("Static en bytes[]: " + new String(Files.readAllBytes(fi.toPath())));
+
+			fileContent = Files.readAllBytes(fi.toPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return fileContent;
+
+	}
+	
 	private byte[] getImagenQr() {
 		String imagesHomePath = "src/main/resources/images/";
 
