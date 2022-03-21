@@ -23,6 +23,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>11</java.version>
 		<spring-boot-admin.version>2.4.0</spring-boot-admin.version>
+		<jasper.version>6.16.0</jasper.version>
 	</properties>
 
 	<dependencies>
@@ -114,15 +115,49 @@
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
-			<version>6.19.0</version>
+			<version>${jasper.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.lowagie</groupId>
+					<artifactId>itext</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
 			<groupId>com.lowagie</groupId>
 			<artifactId>itext</artifactId>
 			<version>2.1.7</version>
-			<scope>compile</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports-fonts</artifactId>
+			<version>${jasper.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports-metadata</artifactId>
+			<version>${jasper.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.adobe.xmp/xmpcore -->
+		<dependency>
+			<groupId>com.adobe.xmp</groupId>
+			<artifactId>xmpcore</artifactId>
+			<version>6.1.11</version>
+		</dependency>
+
+
+<!-- 		<dependency> -->
+<!-- 			<groupId>local.jasperFontOverrides</groupId> -->
+<!-- 			<artifactId>local.jasperFontOverrides</artifactId> -->
+<!-- 			<version>1.0</version> -->
+<!-- 			<scope>system</scope> -->
+<!-- 			<systemPath>${pom.basedir}/src/main/resources/fonts/Helvetica-font.jar</systemPath> -->
+<!-- 		</dependency> -->
+
 
 	</dependencies>
 	<dependencyManagement>

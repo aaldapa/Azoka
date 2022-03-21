@@ -84,9 +84,7 @@
 			<fieldDescription><![CDATA[apellido]]></fieldDescription>
 		</field>
 	</subDataset>
-	<parameter name="pDatasourcePersona" class="java.util.List" nestedType="es.eroski.azoka.dto.Persona">
-		<defaultValueExpression><![CDATA[Arrays.asList(new es.eroski.azoka.dto.Persona (1, "Elena", "Nunez"), new es.eroski.azoka.dto.Persona(2, "Jose", "Lema"))]]></defaultValueExpression>
-	</parameter>
+	<parameter name="pDatasourcePersona" class="java.util.List" nestedType="es.eroski.azoka.dto.Persona"/>
 	<parameter name="pDatasourceAlumno" class="java.util.List" nestedType="es.eroski.azoka.dto.Alumno">
 		<parameterDescription><![CDATA[Lista de alumnos]]></parameterDescription>
 	</parameter>
@@ -100,7 +98,7 @@
 	<title>
 		<band height="79" splitType="Stretch">
 			<staticText>
-				<reportElement x="80" y="40" width="190" height="30" uuid="3fc7cceb-e0fe-467e-b228-6ce6430994f0">
+				<reportElement x="200" y="24" width="190" height="30" uuid="3fc7cceb-e0fe-467e-b228-6ce6430994f0">
 					<property name="net.sf.jasperreports.export.pdf.tag.h1" value="full"/>
 				</reportElement>
 				<textElement>
@@ -108,19 +106,25 @@
 				</textElement>
 				<text><![CDATA[Pruebas de autofactura]]></text>
 			</staticText>
-			<image>
-				<reportElement x="26" y="29" width="50" height="50" uuid="fdde6bef-91db-45ea-b873-e3a3bc8b49c7">
-					<property name="com.jaspersoft.studio.element.name" value="Logotipo de Eroski"/>
-				</reportElement>
-				<imageExpression><![CDATA[$P{logoEroskiPath}]]></imageExpression>
-			</image>
 		</band>
 	</title>
 	<pageHeader>
 		<band height="35" splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="61" splitType="Stretch"/>
+		<band height="61" splitType="Stretch">
+			<textField>
+				<reportElement x="320" y="18" width="160" height="25" uuid="3a1d55c5-d88b-4f0d-8b27-780f1a5bfed6"/>
+				<textFieldExpression><![CDATA[$R{saludo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="0" y="7" width="270" height="50" uuid="a97b7467-6f9f-4b57-b9ad-a0732dd3e09e"/>
+				<textElement>
+					<font size="24"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{REPORT_LOCALE}.getDisplayName ($P{REPORT_LOCALE})]]></textFieldExpression>
+			</textField>
+		</band>
 	</columnHeader>
 	<detail>
 		<band height="125" splitType="Stretch">

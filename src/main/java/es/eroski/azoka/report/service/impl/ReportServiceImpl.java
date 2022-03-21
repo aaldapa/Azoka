@@ -81,13 +81,13 @@ public class ReportServiceImpl implements ReportService {
 	public Clob getImagenQRClob() {
 		Clob clob = reporRepository.getImagenQr();
 
-		try {
-			System.out.println("Hello ! " + clob + " length=" + clob.length());
-			System.out.println("Hello ! " + clob.getSubString(1, (int) clob.length()));
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			System.out.println("Hello ! " + clob + " length=" + clob.length());
+//			System.out.println("Hello ! " + clob.getSubString(1, (int) clob.length()));
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 
 		return clob;
 	}
