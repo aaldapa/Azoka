@@ -3,7 +3,6 @@
  */
 package es.eroski.azoka.utils;
 
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -13,28 +12,71 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
+ * Clase de utilidad para trabajar con numeros
+ * 
  * @author BICUGUAL
  *
  */
 public class NumeroUtils {
 	@SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger(FechaUtils.class);
-	
-	public static final String pattern_es_ES = "MM/dd/yyyy";
-	public static final String pattern_eu_ES = "yyyy/MM/dd";
-	
 
+	public static final int DEFAULT_MAX_FRACTION_DIGITS = 2;
+	public static final int DEFAULT_MIN_FRACTION_DIGITS = 2;
+
+	/**
+	 * Devuelve String con el numero en formato moneda (sin el simbolo) en funcion
+	 * de la locale con el numero de digitos decimales minimos y maximos
+	 * configurados por defecto.
+	 * 
+	 * Si la locale informada es null, se utiliza la locale por defecto.
+	 * Si el numero informado es null, se devuelve null
+	 * 
+	 * @param number
+	 * @param locale
+	 * @return
+	 */
 	public static String formatNumberToStringByLocale(Float number, Locale locale) {
-		NumberFormat nf = NumberFormat.getCurrencyInstance(locale);
-		
-		DecimalFormatSymbols decimalFormatSymbols = ((DecimalFormat) nf).getDecimalFormatSymbols();
-		decimalFormatSymbols.setCurrencySymbol("");
-		((DecimalFormat) nf).setDecimalFormatSymbols(decimalFormatSymbols);
-		
-//		nf.setRoundingMode(RoundingMode.UP);
-        nf.setMinimumFractionDigits(2);
-        nf.setMaximumFractionDigits(2);
-		
-		return nf.format(number);
+		return formatNumberToStringByLocale(number, locale, DEFAULT_MAX_FRACTION_DIGITS, DEFAULT_MIN_FRACTION_DIGITS);
 	}
+
+	/**
+	 * Devuelve String con el numero en formato moneda (sin el simbolo) en funcion
+	 * de la locale con el numero de digitos decimales minimos y maximos pasados por
+	 * parametro.
+	 * 
+	 * Si la locale informada es null, se utiliza la locale por defecto.
+	 * Si el numero informado es null, se devuelve null
+	 * 
+	 * @param number
+	 * @param locale
+	 * @param maxFractionDigits
+	 * @param minFractionDigits
+	 * @return
+	 */
+	public static String formatNumberToStringByLocale(Float number, Locale locale, int maxFractionDigits,
+			int minFractionDigits) {
+
+		if (null != number) {
+			
+			if (null == locale) {
+				locale = Locale.getDefault();
+			}
+
+			NumberFormat nf = NumberFormat.getCurrencyInstance(locale);
+
+			DecimalFormatSymbols decimalFormatSymbols = ((DecimalFormat) nf).getDecimalFormatSymbols();
+			decimalFormatSymbols.setCurrencySymbol("");
+			((DecimalFormat) nf).setDecimalFormatSymbols(decimalFormatSymbols);
+
+			// nf.setRoundingMode(RoundingMode.UP);
+			nf.setMinimumFractionDigits(maxFractionDigits);
+			nf.setMaximumFractionDigits(minFractionDigits);
+
+			return nf.format(number);
+		}
+
+		return null;
+	}
+
 }

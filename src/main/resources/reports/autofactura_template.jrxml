@@ -763,22 +763,27 @@
 			</componentElement>
 		</band>
 	</detail>
-	<summary>
-		<band height="78" splitType="Stretch">
+	<pageFooter>
+		<band height="50">
 			<textField>
-				<reportElement x="0" y="30" width="555" height="30" uuid="afae84b5-0f82-4dfd-9605-d65d4ad7870c">
-					<property name="net.sf.jasperreports.export.pdf.tag.td" value="start"/>
-				</reportElement>
-				<textFieldExpression><![CDATA[$R{footer.p2}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="0" y="0" width="555" height="30" uuid="005054ec-71ba-43c5-93c4-e51f674f5ee6">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="net.sf.jasperreports.export.pdf.tag.td" value="end"/>
-				</reportElement>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$R{footer.p1}]]></textFieldExpression>
+				<reportElement x="0" y="20" width="555" height="30" uuid="a85d73a4-1fb9-40eb-89f5-ad92cbecd311"/>
+				<textFieldExpression><![CDATA[$R{footer.p1} + "COLUM footer"]]></textFieldExpression>
 			</textField>
 		</band>
+	</pageFooter>
+	<lastPageFooter>
+		<band height="126">
+			<textField>
+				<reportElement x="0" y="96" width="555" height="30" uuid="c4a8517d-c8d3-47b7-b7e5-cc5c6d20d932"/>
+				<textFieldExpression><![CDATA[$R{footer.p1} + "COLUM footer"]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="220" y="0" width="84" height="80" uuid="61c8bad5-1d97-44d7-ae0d-623acef4ce37"/>
+				<imageExpression><![CDATA[$P{imagenQr}]]></imageExpression>
+			</image>
+		</band>
+	</lastPageFooter>
+	<summary>
+		<band height="78" splitType="Stretch"/>
 	</summary>
 </jasperReport>
