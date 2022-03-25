@@ -30,7 +30,7 @@ import org.springframework.http.HttpStatus;
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/v1/alumnos")
-@OpenAPIDefinition(info = @Info(title = "Example API", version = "1.0", description = "Metodos de prueba API Rest Alumnos"))
+//@OpenAPIDefinition(info = @Info(title = "Example API", version = "1.0", description = "Metodos de prueba API Rest Alumnos"))
 public class AlumnoController {
 
     @Autowired

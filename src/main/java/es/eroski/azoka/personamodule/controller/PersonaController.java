@@ -37,7 +37,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/v1/personas")
-@OpenAPIDefinition(info = @Info(title = "Example API", version = "1.0", description = "Metodos de prueba API Rest Persona"))
+//@OpenAPIDefinition(info = @Info(title = "Example API", version = "1.0", description = "Metodos de prueba API Rest Persona"))
 public class PersonaController {	
 	
 	@Autowired

@@ -33,7 +33,7 @@
 	<title>
 		<band height="102" splitType="Stretch">
 			<image>
-				<reportElement x="0" y="0" width="100" height="30" uuid="9c0ff9a2-d69b-4367-a5c6-24ef0b015d0c"/>
+				<reportElement mode="Transparent" x="0" y="0" width="100" height="30" uuid="9c0ff9a2-d69b-4367-a5c6-24ef0b015d0c"/>
 				<imageExpression><![CDATA["src/main/resources/images/logoEroski.png"]]></imageExpression>
 			</image>
 			<image onErrorType="Blank">

@@ -37,11 +37,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import es.eroski.azoka.autofactura.service.AutofacturaService;
 import es.eroski.azoka.dto.Alumno;
 import es.eroski.azoka.dto.GenteReporte;
 import es.eroski.azoka.dto.Persona;
 import es.eroski.azoka.exceptions.CustomResponseStatusException;
-import es.eroski.azoka.report.service.ReportService;
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
@@ -59,6 +59,7 @@ import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
 import net.sf.jasperreports.export.SimplePdfReportConfiguration;
+import net.sf.jasperreports.export.type.PdfVersionEnum;
 import net.sf.jasperreports.export.type.PdfaConformanceEnum;
 
 /**
@@ -71,15 +72,14 @@ import net.sf.jasperreports.export.type.PdfaConformanceEnum;
 public class GenteReporteController {
 
 	private static final Logger logger = LoggerFactory.getLogger(GenteReporteController.class);
-	private static final org.apache.logging.log4j.Logger logger2 = LogManager.getLogger(GenteReporteController.class);
 
 	@Autowired
-	ReportService reportService;
+	AutofacturaService reportService;
 
 	@GetMapping("/report")
 	public ResponseEntity<byte[]> report(HttpServletResponse response) {
 		try {
-
+			
 			byte[] bytes = this.generatePDFReport();
 			return ResponseEntity.ok()
 					// Specify content type as PDF
@@ -147,8 +147,8 @@ public class GenteReporteController {
 			jasperReportsContext.setProperty("net.sf.jasperreports.default.pdf.embedded", "true");
 
 			String reportHomePath = "src/main/resources/reports/";
-			File reportMainTemplate = ResourceUtils.getFile("classpath:reports/autofactura.jrxml");
-//			File reportMainTemplate = ResourceUtils.getFile("classpath:reports/Blank_A4.jrxml");
+//			File reportMainTemplate = ResourceUtils.getFile("classpath:reports/autofactura.jrxml");
+			File reportMainTemplate = ResourceUtils.getFile("classpath:reports/Blank_A4.jrxml");
 			JasperReport reportMain = JasperCompileManager.compileReport(reportMainTemplate.getAbsolutePath());
 
 //			reportMain.setProperty("net.sf.jasperreports.export.pdf.tag.language", locale.getLanguage());
@@ -203,15 +203,18 @@ public class GenteReporteController {
 //            reportConfig.setForceLineBreakPolicy(false);
 
 			SimplePdfExporterConfiguration exportConfig = new SimplePdfExporterConfiguration();
+			exportConfig.setTagged(true);
+			exportConfig.setTagLanguage(locale.getLanguage());
 			exportConfig.setMetadataAuthor("ALBERTO CUESTA");
 			exportConfig.setMetadataTitle("TITULO DEL PDF");
 			exportConfig.setDisplayMetadataTitle(Boolean.TRUE);
 			exportConfig.setMetadataCreator("EL CREADOR");
 			exportConfig.setMetadataSubject("EL SUBJETC");
-			exportConfig.setTagLanguage(locale.getLanguage());
 			exportConfig.setIccProfilePath(reportHomePath.concat("sRGB_v4_ICC_preference.icc"));
-			exportConfig.setTagged(true);
 			exportConfig.setPdfaConformance(PdfaConformanceEnum.PDFA_1A);
+
+			exportConfig.setPdfVersion(PdfVersionEnum.VERSION_1_2);
+			exportConfig.setMetadataKeywords("keyword,metadata");
 
 //            exportConfig.setAllowedPermissionsHint("PRINTING");
 
@@ -388,7 +391,7 @@ public class GenteReporteController {
 	private byte[] getLogoEroski() {
 		String imagesHomePath = "src/main/resources/images/";
 
-		File fi = new File(imagesHomePath.concat("logoEroski.png"));
+		File fi = new File(imagesHomePath.concat("logoEroski.jpg"));
 		byte[] fileContent = null;
 
 		try {

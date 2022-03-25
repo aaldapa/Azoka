@@ -89,6 +89,7 @@
 		<parameterDescription><![CDATA[Lista de alumnos]]></parameterDescription>
 	</parameter>
 	<parameter name="logoEroskiPath" class="java.lang.Object"/>
+	<parameter name="imagenQr" class="java.io.InputStream"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -96,9 +97,9 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="79" splitType="Stretch">
+		<band height="90" splitType="Stretch">
 			<staticText>
-				<reportElement x="200" y="24" width="190" height="30" uuid="3fc7cceb-e0fe-467e-b228-6ce6430994f0">
+				<reportElement mode="Opaque" x="200" y="24" width="190" height="30" uuid="3fc7cceb-e0fe-467e-b228-6ce6430994f0">
 					<property name="net.sf.jasperreports.export.pdf.tag.h1" value="full"/>
 				</reportElement>
 				<textElement>
@@ -106,6 +107,11 @@
 				</textElement>
 				<text><![CDATA[Pruebas de autofactura]]></text>
 			</staticText>
+			<image>
+				<reportElement mode="Opaque" x="19" y="10" width="140" height="50" uuid="22665823-8f93-4365-a2a1-fb86a2df1cdf"/>
+				<imageExpression><![CDATA[$P{logoEroskiPath}]]></imageExpression>
+				<hyperlinkTooltipExpression><![CDATA[new java.lang.String ("Logo Eroski")]]></hyperlinkTooltipExpression>
+			</image>
 		</band>
 	</title>
 	<pageHeader>
@@ -114,11 +120,11 @@
 	<columnHeader>
 		<band height="61" splitType="Stretch">
 			<textField>
-				<reportElement x="320" y="18" width="160" height="25" uuid="3a1d55c5-d88b-4f0d-8b27-780f1a5bfed6"/>
+				<reportElement mode="Opaque" x="320" y="18" width="160" height="25" uuid="3a1d55c5-d88b-4f0d-8b27-780f1a5bfed6"/>
 				<textFieldExpression><![CDATA[$R{saludo}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement positionType="Float" x="0" y="7" width="270" height="50" uuid="a97b7467-6f9f-4b57-b9ad-a0732dd3e09e"/>
+				<reportElement positionType="Float" mode="Opaque" x="0" y="7" width="270" height="50" uuid="a97b7467-6f9f-4b57-b9ad-a0732dd3e09e"/>
 				<textElement>
 					<font size="24"/>
 				</textElement>
@@ -129,7 +135,7 @@
 	<detail>
 		<band height="125" splitType="Stretch">
 			<componentElement>
-				<reportElement x="170" y="30" width="200" height="59" uuid="62a2452b-3e7e-490c-a06f-ef020752b5fa">
+				<reportElement mode="Opaque" x="170" y="30" width="200" height="59" uuid="62a2452b-3e7e-490c-a06f-ef020752b5fa">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
@@ -245,11 +251,12 @@
 		</band>
 		<band height="124">
 			<componentElement>
-				<reportElement x="170" y="10" width="200" height="90" uuid="92b595e8-77d7-42ac-a676-adc3e2b14787">
+				<reportElement mode="Opaque" x="170" y="10" width="200" height="90" uuid="92b595e8-77d7-42ac-a676-adc3e2b14787">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table 1_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table 1_CH"/>
 					<property name="com.jaspersoft.studio.table.style.detail" value="Table 1_TD"/>
+					<property name="net.sf.jasperreports.export.pdf.tag.h1" value="full"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="DatasetAlumno" uuid="2d66763b-c6bd-483a-b97c-3c7f67001c31">
@@ -259,7 +266,9 @@
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
 						<jr:tableHeader style="Table 1_TH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="200" height="30" uuid="a4074955-247c-4356-ba52-ca747105b327"/>
+								<reportElement x="0" y="0" width="200" height="30" uuid="a4074955-247c-4356-ba52-ca747105b327">
+									<property name="net.sf.jasperreports.export.pdf.tag.table" value="start"/>
+								</reportElement>
 								<text><![CDATA[Listado de Alumnos]]></text>
 							</staticText>
 						</jr:tableHeader>
@@ -267,13 +276,17 @@
 							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
 							<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 								<staticText>
-									<reportElement x="0" y="0" width="68" height="30" uuid="36cbdd9b-1032-41ec-afeb-664afc31fdfa"/>
+									<reportElement x="0" y="0" width="68" height="30" uuid="36cbdd9b-1032-41ec-afeb-664afc31fdfa">
+										<property name="net.sf.jasperreports.export.pdf.tag.th" value="start"/>
+									</reportElement>
 									<text><![CDATA[id]]></text>
 								</staticText>
 							</jr:columnHeader>
 							<jr:detailCell style="Table 1_TD" height="30">
 								<textField>
-									<reportElement x="0" y="0" width="68" height="30" uuid="fdb47483-61a5-4ff0-a3f8-d25212e913b3"/>
+									<reportElement x="0" y="0" width="68" height="30" uuid="fdb47483-61a5-4ff0-a3f8-d25212e913b3">
+										<property name="net.sf.jasperreports.export.pdf.tag.tr" value="start"/>
+									</reportElement>
 									<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
 								</textField>
 							</jr:detailCell>
@@ -297,13 +310,18 @@
 							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
 							<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 								<staticText>
-									<reportElement x="0" y="0" width="66" height="30" uuid="d66b9eab-9c50-4193-9ae3-c1c3d95a3dd2"/>
+									<reportElement x="0" y="0" width="66" height="30" uuid="d66b9eab-9c50-4193-9ae3-c1c3d95a3dd2">
+										<property name="net.sf.jasperreports.export.pdf.tag.th" value="end"/>
+									</reportElement>
 									<text><![CDATA[apellido]]></text>
 								</staticText>
 							</jr:columnHeader>
 							<jr:detailCell style="Table 1_TD" height="30">
 								<textField>
-									<reportElement x="0" y="0" width="66" height="30" uuid="ad3fa0ec-b444-46bb-818b-b427ec2f931a"/>
+									<reportElement x="0" y="0" width="66" height="30" uuid="ad3fa0ec-b444-46bb-818b-b427ec2f931a">
+										<property name="net.sf.jasperreports.export.pdf.tag.table" value="end"/>
+										<property name="net.sf.jasperreports.export.pdf.tag.tr" value="end"/>
+									</reportElement>
 									<textFieldExpression><![CDATA[$F{apellido}]]></textFieldExpression>
 								</textField>
 							</jr:detailCell>
@@ -317,7 +335,12 @@
 		<band height="45" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="73" splitType="Stretch"/>
+		<band height="86" splitType="Stretch">
+			<image>
+				<reportElement x="470" y="0" width="84" height="80" uuid="f896e1fb-ae10-4121-8f4e-b8e0df45ee0f"/>
+				<imageExpression><![CDATA[$P{imagenQr}]]></imageExpression>
+			</image>
+		</band>
 	</pageFooter>
 	<summary>
 		<band height="42" splitType="Stretch"/>
