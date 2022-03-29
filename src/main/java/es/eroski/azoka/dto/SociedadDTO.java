@@ -15,16 +15,16 @@ import lombok.NoArgsConstructor;
  *
  */
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class RetencionDTO implements Serializable{
+public class SociedadDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private String porcRetencion;
-	private String baseIrpf;
-	private String impIrpf;
-	private String importe;
+	private String sociedad;
+	private String nif;
+	private String direccion;
+	private String cpPoblacionProvincia;
 	
 }

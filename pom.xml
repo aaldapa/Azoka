@@ -150,13 +150,13 @@
 		</dependency>
 
 
-<!-- 		<dependency> -->
-<!-- 			<groupId>local.jasperFontOverrides</groupId> -->
-<!-- 			<artifactId>local.jasperFontOverrides</artifactId> -->
-<!-- 			<version>1.0</version> -->
-<!-- 			<scope>system</scope> -->
-<!-- 			<systemPath>${pom.basedir}/src/main/resources/fonts/Helvetica-font.jar</systemPath> -->
-<!-- 		</dependency> -->
+		<!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-bridge -->
+		<dependency>
+		    <groupId>org.apache.xmlgraphics</groupId>
+		    <artifactId>batik-bridge</artifactId>
+		    <version>1.14</version>
+		</dependency>
+
 
 
 	</dependencies>

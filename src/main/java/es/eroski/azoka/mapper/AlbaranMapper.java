@@ -27,6 +27,7 @@ public interface AlbaranMapper {
 	List<AlbaranDTO> map(List<AlbaranEntity> entity);
 
 	default AlbaranDTO map(AlbaranEntity entity) {
+		
 		Locale locale = LocaleContextHolder.getLocale();
 		
 		return AlbaranDTO.builder().albProvr(entity.getAlbProvr())
@@ -35,7 +36,7 @@ public interface AlbaranMapper {
 				.denomInforme(entity.getDenomInforme())
 				.baseImp(NumeroUtils.formatNumberToStringByLocale(entity.getBaseImp(),locale))
 				.tipoIva(NumeroUtils.formatNumberToStringByLocale(entity.getTipoIva(),locale))
-				.cuotaIva(NumeroUtils.formatNumberToStringByLocale(entity.getCuotaIva(),locale))
+				.cuotaIva(NumeroUtils.formatNumberToStringByLocale(entity.getCuotaIva(),locale, 4,2))
 				.importeTotal(NumeroUtils.formatNumberToStringByLocale(entity.getImporteTotal(), locale))
 				.build();
 	}

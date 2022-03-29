@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import es.eroski.azoka.autofactura.service.AutofacturaService;
 import es.eroski.azoka.exceptions.CustomResponseStatusException;
+import es.eroski.azoka.utils.Utils;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -63,8 +64,7 @@ public class AutofacturaController {
 		
 		byte[] autofactura = null;
 
-		//TODO Obtener el nombre del pdf
-		String filename  = "autofactura.pdf";
+		String filename  = Utils.fileNameContructor(codProveedor, numDocumento, year).concat(".pdf");
 
 		try {
 			autofactura = service.generateJasperReportPDF(locale, codProveedor, numDocumento, year, codSociedad);

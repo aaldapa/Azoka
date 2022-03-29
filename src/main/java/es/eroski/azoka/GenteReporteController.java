@@ -3,15 +3,10 @@
  */
 package es.eroski.azoka;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.Files;
-import java.sql.Clob;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,8 +17,6 @@ import java.util.ResourceBundle;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.logging.log4j.LogManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -156,29 +149,29 @@ public class GenteReporteController {
 			JRSaver.saveObject(reportMain,
 					reportHomePath.concat(reportMainTemplate.getName().replace("jrxml", "jasper")));
 
-			byte[] imagenQrBA = reportService.getImagenQR();
-			Clob imagenQrClob = reportService.getImagenQRClob();
-			String imagenQrStr = null;
-			InputStream imagenQrStream = null;
-			try {
+//			byte[] imagenQrBA = reportService.getImagenQR();
+//			Clob imagenQrClob = reportService.getImagenQRClob();
+//			String imagenQrStr = null;
+//			InputStream imagenQrStream = null;
+//			try {
+//
+//				imagenQrStr = imagenQrClob.getSubString(1, (int) imagenQrClob.length());
+//				imagenQrStream = new ByteArrayInputStream(
+//						org.apache.tomcat.util.codec.binary.Base64.decodeBase64(imagenQrStr.getBytes()));
+//
+////				System.out.println("Stream: " + imagenQrStream);
+//			} catch (SQLException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 
-				imagenQrStr = imagenQrClob.getSubString(1, (int) imagenQrClob.length());
-				imagenQrStream = new ByteArrayInputStream(
-						org.apache.tomcat.util.codec.binary.Base64.decodeBase64(imagenQrStr.getBytes()));
-
-//				System.out.println("Stream: " + imagenQrStream);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			File targetFile = new File("src/main/resources/imagen.png");
-			OutputStream outStream = new FileOutputStream(targetFile);
-			outStream.write(imagenQrBA);
-
-			imagenQrBA = Files.readAllBytes(targetFile.toPath());
-
-			IOUtils.closeQuietly(outStream);
+//			File targetFile = new File("src/main/resources/imagen.png");
+//			OutputStream outStream = new FileOutputStream(targetFile);
+//			outStream.write(imagenQrBA);
+//
+//			imagenQrBA = Files.readAllBytes(targetFile.toPath());
+//
+//			IOUtils.closeQuietly(outStream);
 
 			Map<String, Object> parameters = new HashMap<>();
 
@@ -190,7 +183,7 @@ public class GenteReporteController {
 			parameters.put("pDatasourceAlumno", lstAlumnos);
 			parameters.put("pDatasourcePersona", lstPersonas);
 
-			parameters.put("imagenQr", imagenQrStream);
+//			parameters.put("imagenQr", imagenQrStream);
 
 			JasperPrint jasperPrint = JasperFillManager.fillReport(reportMain, parameters, new JREmptyDataSource());
 
@@ -258,29 +251,29 @@ public class GenteReporteController {
 			JRSaver.saveObject(reportMain,
 					reportHomePath.concat(reportMainTemplate.getName().replace("jrxml", "jasper")));
 
-			byte[] imagenQrBA = reportService.getImagenQR();
-			Clob imagenQrClob = reportService.getImagenQRClob();
-			String imagenQrStr = null;
-			InputStream imagenQrStream = null;
-			try {
+//			byte[] imagenQrBA = reportService.getImagenQR();
+//			Clob imagenQrClob = reportService.getImagenQRClob();
+//			String imagenQrStr = null;
+//			InputStream imagenQrStream = null;
+//			try {
+//
+//				imagenQrStr = imagenQrClob.getSubString(1, (int) imagenQrClob.length());
+//				imagenQrStream = new ByteArrayInputStream(
+//						org.apache.tomcat.util.codec.binary.Base64.decodeBase64(imagenQrStr.getBytes()));
+//
+////				System.out.println("Stream: " + imagenQrStream);
+//			} catch (SQLException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 
-				imagenQrStr = imagenQrClob.getSubString(1, (int) imagenQrClob.length());
-				imagenQrStream = new ByteArrayInputStream(
-						org.apache.tomcat.util.codec.binary.Base64.decodeBase64(imagenQrStr.getBytes()));
-
-//				System.out.println("Stream: " + imagenQrStream);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			File targetFile = new File("src/main/resources/imagen.png");
-			OutputStream outStream = new FileOutputStream(targetFile);
-			outStream.write(imagenQrBA);
-
-			imagenQrBA = Files.readAllBytes(targetFile.toPath());
-
-			IOUtils.closeQuietly(outStream);
+//			File targetFile = new File("src/main/resources/imagen.png");
+//			OutputStream outStream = new FileOutputStream(targetFile);
+//			outStream.write(imagenQrBA);
+//
+//			imagenQrBA = Files.readAllBytes(targetFile.toPath());
+//
+//			IOUtils.closeQuietly(outStream);
 
 			Map<String, Object> parameters = new HashMap<>();
 
@@ -292,7 +285,7 @@ public class GenteReporteController {
 			parameters.put("pDatasourceAlumno", lstAlumnos);
 			parameters.put("pDatasourcePersona", lstPersonas);
 
-			parameters.put("imagenQr", imagenQrStream);
+//			parameters.put("imagenQr", imagenQrStream);
 
 			JasperPrint jasperPrint = JasperFillManager.fillReport(reportMain, parameters, new JREmptyDataSource());
 
@@ -343,37 +336,37 @@ public class GenteReporteController {
 			JRSaver.saveObject(subreport3, subreport3Path);
 
 			JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(jrBeanCollectionDataSource);
-			byte[] imagenQrBA = reportService.getImagenQR();
-			byte[] imagenQrBAStatic = this.getImagenQr();
-			Clob imagenQrClob = reportService.getImagenQRClob();
-			String imagenQrStr = null;
-			InputStream imagenQrStream = null;
-			try {
+//			byte[] imagenQrBA = this.getImagenQR();
+//			byte[] imagenQrBAStatic = this.getImagenQr();
+//			Clob imagenQrClob = reportService.getImagenQRClob();
+//			String imagenQrStr = null;
+//			InputStream imagenQrStream = null;
+//			try {
+//
+//				imagenQrStr = imagenQrClob.getSubString(1, (int) imagenQrClob.length());
+//				imagenQrStream = new ByteArrayInputStream(
+//						org.apache.tomcat.util.codec.binary.Base64.decodeBase64(imagenQrStr.getBytes()));
+//
+////				System.out.println("Stream: " + imagenQrStream);
+//			} catch (SQLException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 
-				imagenQrStr = imagenQrClob.getSubString(1, (int) imagenQrClob.length());
-				imagenQrStream = new ByteArrayInputStream(
-						org.apache.tomcat.util.codec.binary.Base64.decodeBase64(imagenQrStr.getBytes()));
-
-//				System.out.println("Stream: " + imagenQrStream);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			File targetFile = new File("src/main/resources/imagen.png");
-			OutputStream outStream = new FileOutputStream(targetFile);
-			outStream.write(imagenQrBA);
-
-			imagenQrBA = Files.readAllBytes(targetFile.toPath());
-
-			IOUtils.closeQuietly(outStream);
+//			File targetFile = new File("src/main/resources/imagen.png");
+//			OutputStream outStream = new FileOutputStream(targetFile);
+//			outStream.write(imagenQrBA);
+//
+//			imagenQrBA = Files.readAllBytes(targetFile.toPath());
+//
+//			IOUtils.closeQuietly(outStream);
 
 			Map<String, Object> parameters = new HashMap<>();
 			parameters.put("report_sub1", subreport1Path);
 			parameters.put("report_sub2", subreport2Path);
 			parameters.put("subreport_tabla", subreport3Path);
 //			parameters.put("imagenQrBAStatic", imagenQrBAStatic);
-			parameters.put("imagenQr", imagenQrStream);
+//			parameters.put("imagenQr", reportService);
 
 			JasperPrint jasperPrint = JasperFillManager.fillReport(reportMain, parameters, dataSource);
 

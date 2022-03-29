@@ -19,7 +19,6 @@ import es.eroski.azoka.utils.NumeroUtils;
  */
 @Mapper(componentModel = "spring")
 public interface RetencionMapper {
-
 	
 	RetencionMapper INSTANCE = Mappers.getMapper(RetencionMapper.class);
 

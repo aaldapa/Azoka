@@ -6,6 +6,7 @@ package es.eroski.azoka.utils;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.Locale;
 
 import org.apache.logging.log4j.LogManager;
@@ -29,8 +30,8 @@ public class NumeroUtils {
 	 * de la locale con el numero de digitos decimales minimos y maximos
 	 * configurados por defecto.
 	 * 
-	 * Si la locale informada es null, se utiliza la locale por defecto.
-	 * Si el numero informado es null, se devuelve null
+	 * Si la locale informada es null, se utiliza la locale por defecto. Si el
+	 * numero informado es null, se devuelve null
 	 * 
 	 * @param number
 	 * @param locale
@@ -45,8 +46,8 @@ public class NumeroUtils {
 	 * de la locale con el numero de digitos decimales minimos y maximos pasados por
 	 * parametro.
 	 * 
-	 * Si la locale informada es null, se utiliza la locale por defecto.
-	 * Si el numero informado es null, se devuelve null
+	 * Si la locale informada es null, se utiliza la locale por defecto. Si el
+	 * numero informado es null, se devuelve null
 	 * 
 	 * @param number
 	 * @param locale
@@ -58,20 +59,20 @@ public class NumeroUtils {
 			int minFractionDigits) {
 
 		if (null != number) {
-			
+
 			if (null == locale) {
 				locale = Locale.getDefault();
 			}
 
-			NumberFormat nf = NumberFormat.getCurrencyInstance(locale);
+			DecimalFormat nf = (DecimalFormat) NumberFormat.getCurrencyInstance(locale);
+			// nf.setRoundingMode(RoundingMode.UP);
+			nf.setMinimumFractionDigits(minFractionDigits);
+			nf.setMaximumFractionDigits(maxFractionDigits);
 
 			DecimalFormatSymbols decimalFormatSymbols = ((DecimalFormat) nf).getDecimalFormatSymbols();
 			decimalFormatSymbols.setCurrencySymbol("");
 			((DecimalFormat) nf).setDecimalFormatSymbols(decimalFormatSymbols);
-
-			// nf.setRoundingMode(RoundingMode.UP);
-			nf.setMinimumFractionDigits(maxFractionDigits);
-			nf.setMaximumFractionDigits(minFractionDigits);
+			
 
 			return nf.format(number);
 		}
@@ -79,4 +80,37 @@ public class NumeroUtils {
 		return null;
 	}
 
+	/**
+	 * Formatea String formato teniendo en cuanta la locale.
+	 * 
+	 * Si la locale informada es null, se utiliza la locale por defecto. Si el
+	 * numero informado es null, se devuelve null
+	 * 
+	 * @param numberStr
+	 * @param locale
+	 * @return
+	 */
+	public static Double formatStringToDoubleByLocale(String numberStr, Locale locale) {
+
+		if (null != numberStr) {
+
+			if (null == locale) {
+				locale = Locale.getDefault();
+			}
+
+			NumberFormat nf = NumberFormat.getInstance(locale);
+
+			try {
+				
+				return nf.parse(numberStr).doubleValue();
+				
+			} catch (ParseException e) {
+				logger.error(e);
+				e.printStackTrace();
+			}
+		}
+
+		return null;
+
+	}
 }

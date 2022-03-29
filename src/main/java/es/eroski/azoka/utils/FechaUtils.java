@@ -43,7 +43,7 @@ public class FechaUtils {
 			}
 
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
-					"es_EU".equals(locale.toString()) ? PATTERN_EU_ES : PATTERN_ES_ES);
+					"eu_ES".equals(locale.toString()) ? PATTERN_EU_ES : PATTERN_ES_ES);
 
 			return simpleDateFormat.format(date);
 

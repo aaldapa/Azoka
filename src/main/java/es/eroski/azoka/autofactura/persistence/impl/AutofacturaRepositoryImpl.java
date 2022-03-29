@@ -20,9 +20,12 @@ import org.springframework.stereotype.Repository;
 
 import es.eroski.azoka.autofactura.persistence.AutofacturaRepository;
 import es.eroski.azoka.model.AlbaranEntity;
+import es.eroski.azoka.model.DireccionYcpProveedorEntity;
+import es.eroski.azoka.model.NombreYNifProveedorEntity;
 import es.eroski.azoka.model.ParametrosCabeceraEntity;
 import es.eroski.azoka.model.ResumenIvaEntity;
 import es.eroski.azoka.model.RetencionEntity;
+import es.eroski.azoka.model.SociedadEntity;
 
 /**
  * @author BICUGUAL
@@ -36,6 +39,78 @@ public class AutofacturaRepositoryImpl implements AutofacturaRepository {
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 
+	@Override
+	public NombreYNifProveedorEntity getNombreByCodProveedor(Long codProveedor) {
+
+		String sql = " SELECT nombre,  CIF_UE2  FROM provr_genericos WHERE cod_provr_gen = ?";
+		
+		logger.info("getNombreByCodProveedor [SQL] [{}] Params: [{}] : ", sql, codProveedor);
+
+		try {
+
+			return jdbcTemplate.queryForObject(sql.toString(), new NombreYNifProvBdMapper(), codProveedor);
+
+		} catch (EmptyResultDataAccessException e) {
+			logger.error(e);
+
+			return null;
+		}
+	}
+	
+	@Override
+	public DireccionYcpProveedorEntity getDireccionByCodProveedor(Long codProveedor) throws DataAccessException {
+		StringBuilder sql = new StringBuilder();
+
+		sql.append(" SELECT d.direccion ");
+		sql.append(", d.cod_postal ");
+		sql.append(", d.poblacion ");
+		sql.append(", p.descripcion ");
+		sql.append(" FROM direcciones d, provincias p");
+		sql.append(" WHERE d.cod_provincia = p.cod_provincia ");
+		sql.append(" AND cod_direccion IN ");
+		sql.append(" (SELECT cod_direccion FROM provr_dir WHERE cod_provr_gen_g = ? AND cod_tp_direccion = 1) ");
+
+		logger.info("getDireccionByCodProveedor [SQL] [{}] Params: [{}] : ", sql.toString(), codProveedor);
+
+		try {
+
+			return jdbcTemplate.queryForObject(sql.toString(), new DireccionProvBdMapper(), codProveedor);
+
+		} catch (EmptyResultDataAccessException e) {
+			logger.error(e);
+
+			return null;
+		}
+	}
+	
+	
+	@Override
+	public SociedadEntity getSociedadByCodSociedad(Integer codSociedad) throws DataAccessException {
+		StringBuilder sql = new StringBuilder();
+
+		sql.append(" SELECT s.descripcion as sociedad ");
+		sql.append(", s.cif_ue2 as nif ");
+		sql.append(", s.direccion ");
+		sql.append(", s.cod_postal ");
+		sql.append(", s.poblacion ");
+		sql.append(", p.descripcion as provincia");
+		sql.append(" FROM sociedades s, provincias p");
+		sql.append(" WHERE s.cod_provincia = p.cod_provincia ");
+		sql.append(" AND cod_soc = ? ");
+		
+		logger.info("getSociedadByCodSociedad [SQL] [{}] Params: [{}] : ", sql.toString(), codSociedad);
+
+		try {
+
+			return jdbcTemplate.queryForObject(sql.toString(), new SociedadBdMapper(), codSociedad);
+
+		} catch (EmptyResultDataAccessException e) {
+			logger.error(e);
+
+			return null;
+		}
+	}
+	
 	@Override
 	public Long getCodDocumento(Long codProveedor, String numDocumento, Integer year, Integer codSociedad)
 			throws DataAccessException {
@@ -63,6 +138,7 @@ public class AutofacturaRepositoryImpl implements AutofacturaRepository {
 		}
 	}
 
+	
 	@Override
 	public ParametrosCabeceraEntity getHeaderParameters(Long codDocumento) throws DataAccessException {
 
@@ -188,6 +264,48 @@ public class AutofacturaRepositoryImpl implements AutofacturaRepository {
 		}
 	}
 
+	private class NombreYNifProvBdMapper implements RowMapper<NombreYNifProveedorEntity> {
+
+		public NombreYNifProveedorEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
+
+			return new NombreYNifProveedorEntity(rs.getString("nombre"), rs.getString("cif_ue2"));
+		}
+
+	}
+	
+	private class DireccionProvBdMapper implements RowMapper<DireccionYcpProveedorEntity> {
+
+		public DireccionYcpProveedorEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
+
+			DireccionYcpProveedorEntity	item = new DireccionYcpProveedorEntity();
+			
+			item.setDireccion(rs.getString("direccion"));
+			item.setCodigoPostal(rs.getString("cod_postal"));
+			item.setPoblacion(rs.getString("poblacion"));
+			item.setDescripcion(rs.getString("descripcion"));
+			
+			return item;
+		}
+
+	}
+	
+	private class SociedadBdMapper implements RowMapper<SociedadEntity> {
+
+		public SociedadEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
+
+			SociedadEntity	item = new SociedadEntity();
+			item.setSociedad(rs.getString("sociedad"));
+			item.setNif(rs.getString("nif"));
+			item.setDireccion(rs.getString("direccion"));
+			item.setCodigoPostal(rs.getString("cod_postal"));
+			item.setPoblacion(rs.getString("poblacion"));
+			item.setProvincia(rs.getString("provincia"));
+			
+			return item;
+		}
+
+	}
+	
 	private class ParametrosCabeceraBdMapper implements RowMapper<ParametrosCabeceraEntity> {
 
 		public ParametrosCabeceraEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -282,7 +400,5 @@ public class AutofacturaRepositoryImpl implements AutofacturaRepository {
 		}
 
 	}
-
-
 
 }

@@ -9,9 +9,12 @@ import java.util.List;
 import org.springframework.dao.DataAccessException;
 
 import es.eroski.azoka.model.AlbaranEntity;
+import es.eroski.azoka.model.DireccionYcpProveedorEntity;
+import es.eroski.azoka.model.NombreYNifProveedorEntity;
 import es.eroski.azoka.model.ParametrosCabeceraEntity;
 import es.eroski.azoka.model.ResumenIvaEntity;
 import es.eroski.azoka.model.RetencionEntity;
+import es.eroski.azoka.model.SociedadEntity;
 
 /**
  * @author BICUGUAL
@@ -19,7 +22,12 @@ import es.eroski.azoka.model.RetencionEntity;
  */
 public interface AutofacturaRepository {
 
-	public Clob getImagenQr() throws DataAccessException;
+	
+	public DireccionYcpProveedorEntity getDireccionByCodProveedor(Long codProveedor) throws DataAccessException ;
+	
+	public NombreYNifProveedorEntity getNombreByCodProveedor(Long codProveedor) throws DataAccessException ;
+	
+	public SociedadEntity getSociedadByCodSociedad(Integer codSociedad) throws DataAccessException ;
 	
 	public Long getCodDocumento(Long codProveedor, String numDocumento, Integer year, Integer codSociedad ) throws DataAccessException;
 	
@@ -31,4 +39,5 @@ public interface AutofacturaRepository {
 	
 	public RetencionEntity getRetencionByCodDocumento(Long codDocumento);
 
+	public Clob getImagenQr() throws DataAccessException;
 }
