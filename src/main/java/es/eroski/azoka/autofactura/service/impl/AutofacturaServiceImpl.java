@@ -34,7 +34,6 @@ import es.eroski.azoka.dto.ProveedorDTO;
 import es.eroski.azoka.dto.ResumenIvaDTO;
 import es.eroski.azoka.dto.RetencionDTO;
 import es.eroski.azoka.dto.SociedadDTO;
-import es.eroski.azoka.exceptions.AutofacturaException;
 import es.eroski.azoka.mapper.AlbaranMapper;
 import es.eroski.azoka.mapper.ParametrosCabeceraMapper;
 import es.eroski.azoka.mapper.ProveedorMapper;
@@ -99,39 +98,56 @@ public class AutofacturaServiceImpl implements AutofacturaService {
 	@Override
 	public byte[] generateJasperReportPDF(Locale locale, Long codProveedor, String numDocumento, Integer year,
 			Integer codSociedad) {
-		
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-		// Poner en contexto las fuentes embebidas
-		JasperUtils.setJasperReportsContext();
+		// Obtener los datos a cargar en el reporte
+		Map<String, Object> parameters = this.getReportParameters(locale, codProveedor, numDocumento, year,
+				codSociedad);
 
-		try {
-			// Obtener reporte compilado
-			JasperReport reportMain = JasperUtils.reportCompile(jrxmlTemplatePath);
+		if (null != parameters) {
 
-			// Obtener los datos a cargar en el reporte
-			Map<String, Object> parameters = this.getReportParameters(locale, codProveedor, numDocumento, year,
-					codSociedad);
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-			// Generar el reporte
-			JasperPrint jasperPrint = JasperFillManager.fillReport(reportMain, parameters, new JREmptyDataSource());
+			// Poner en contexto las fuentes embebidas
+			JasperUtils.setJasperReportsContext();
 
-			// Obtener configuracion para la exportacion del reporte
-			SimplePdfExporterConfiguration exportConfig = JasperUtils.getPdfExporterConfiguration(locale, iccPath,
-					env.getProperty("report.pdf.metadata.autor"),
-					Utils.fileNameContructor(codProveedor, numDocumento, year));
+			try {
+				// Obtener reporte compilado
+				JasperReport reportMain = JasperUtils.reportCompile(jrxmlTemplatePath);
 
-			// Exportar el reporte
-			JasperUtils.exportarPDF(jasperPrint, outputStream, exportConfig);
+				// Generar el reporte
+				JasperPrint jasperPrint = JasperFillManager.fillReport(reportMain, parameters, new JREmptyDataSource());
 
-		} catch (FileNotFoundException | JRException e) {
-			logger.error(e);
-			e.printStackTrace();
+				// Obtener configuracion para la exportacion del reporte
+				SimplePdfExporterConfiguration exportConfig = JasperUtils.getPdfExporterConfiguration(locale, iccPath,
+						env.getProperty("report.pdf.metadata.autor"),
+						Utils.fileNameContructor(codProveedor, numDocumento, year));
+
+				// Exportar el reporte
+				JasperUtils.exportarPDF(jasperPrint, outputStream, exportConfig);
+
+			} catch (FileNotFoundException | JRException e) {
+				logger.error(e);
+				e.printStackTrace();
+			}
+
+			return outputStream.toByteArray();
+
 		}
 
-		return outputStream.toByteArray();
+		return null;
+
 	}
 
+	/**
+	 * Obtiene los datos necesarios para cargar el reporte
+	 * 
+	 * @param locale
+	 * @param codProveedor
+	 * @param numDocumento
+	 * @param year
+	 * @param codSociedad
+	 * @return
+	 */
 	private Map<String, Object> getReportParameters(Locale locale, Long codProveedor, String numDocumento, Integer year,
 			Integer codSociedad) {
 
@@ -139,40 +155,57 @@ public class AutofacturaServiceImpl implements AutofacturaService {
 
 		Long codDocumento = this.getCodDocumento(codProveedor, numDocumento, year, codSociedad);
 
-		if (null == codDocumento) {
-			throw new AutofacturaException("No se ha encontrado codigo de documento para los parametros facilitados");
+		// Si no se localiza un numero de documento, se retorna null
+		if (null != codDocumento) {
+
+			Map<String, Object> parameters = new HashMap<>();
+			parameters.put("REPORT_RESOURCE_BUNDLE", bundle);
+			parameters.put(JRParameter.REPORT_LOCALE, locale);
+
+			parameters.put("logoEroskiPath", this.getLogoEroski(locale));
+			parameters.put("proveedor", this.getProveedorDTO(codProveedor));
+			parameters.put("sociedad", this.getSociedadDTO(codSociedad));
+
+			// Tabla1
+			parameters.put("parametrosCabecera", this.getParametrosCabeceraDTO(codDocumento));
+
+			// Tabla2
+			parameters.put("lstAlbaranes", this.getLstAlbaranesDTO(codDocumento));
+
+			// Tabla3
+			List<ResumenIvaDTO> lstResumenesIvaDTO = this.getLstResumenesIvaDTO(codDocumento);
+			parameters.put("lstResumenesIva", lstResumenesIvaDTO);
+
+			// Tabla 4
+			parameters.put("sumaTotalFactura", this.getSumTotalFactura(lstResumenesIvaDTO, locale));
+
+			// Tabla 5
+			parameters.put("retencion", this.getRetencionDTO(codDocumento));
+
+			//qr
+			parameters.put("imagenQr", this.getImagenQrStream(codDocumento));
+
+			return parameters;
 		}
 
-		Map<String, Object> parameters = new HashMap<>();
+		return null;
 
-		parameters.put("REPORT_RESOURCE_BUNDLE", bundle);
-		parameters.put(JRParameter.REPORT_LOCALE, locale);
-
-		parameters.put("logoEroskiPath", this.getLogoEroski(locale));
-		parameters.put("proveedor", this.getProveedorDTO(codProveedor));
-		parameters.put("sociedad", this.getSociedadDTO(codSociedad));
-
-		// Tabla1
-		parameters.put("parametrosCabecera", this.getParametrosCabeceraDTO(codDocumento));
-
-		// Tabla2
-		parameters.put("lstAlbaranes", this.getLstAlbaranesDTO(codDocumento));
-
-		// Tabla3
-		List<ResumenIvaDTO> lstResumenesIvaDTO = this.getLstResumenesIvaDTO(codDocumento);
-		parameters.put("lstResumenesIva", lstResumenesIvaDTO);
-
-		// Tabla 4
-		parameters.put("sumaTotalFactura", this.getSumTotalFactura(lstResumenesIvaDTO, locale));
-
-		// Tabla 5
-		parameters.put("retencion", this.getRetencionDTO(codDocumento));
-
-		parameters.put("imagenQr", this.getImagenQrStream(codDocumento));
-
-		return parameters;
 	}
 
+	/**
+	 * Obtiene la imagen del logotipo de Eroski almacenada en los recursos del
+	 * proyecto en funcion de la locale.
+	 * 
+	 * La propiedad path.logo.eroski del properties debe ser configurada con el
+	 * formato images/nombre_de_la_imagen_xx_XX.ext donde xx se corresponde con el
+	 * idioma y XX con el pais.
+	 * 
+	 * En el proceso de obtencion del logo, se sustituyen la xx_XX por los valores
+	 * de la locale.toString()
+	 * 
+	 * @param locale
+	 * @return
+	 */
 	private byte[] getLogoEroski(Locale locale) {
 
 		File logoEroski;
@@ -192,6 +225,12 @@ public class AutofacturaServiceImpl implements AutofacturaService {
 
 	}
 
+	/**
+	 * Obtiene los datos del proveedor en base al codProveedor
+	 * 
+	 * @param codProveedor
+	 * @return
+	 */
 	private ProveedorDTO getProveedorDTO(Long codProveedor) {
 
 		NombreYNifProveedorEntity nomYnifEntity = repository.getNombreByCodProveedor(codProveedor);
@@ -213,6 +252,12 @@ public class AutofacturaServiceImpl implements AutofacturaService {
 
 	}
 
+	/**
+	 * Obtiene los datos de la sociedad en base al codSociedad
+	 * 
+	 * @param codSociedad
+	 * @return
+	 */
 	private SociedadDTO getSociedadDTO(Integer codSociedad) {
 
 		SociedadDTO sociedadDto = sociedadMapper.map(repository.getSociedadByCodSociedad(codSociedad));
@@ -222,6 +267,15 @@ public class AutofacturaServiceImpl implements AutofacturaService {
 		return sociedadDto;
 	}
 
+	/**
+	 * Obtiene el codigo del documento con los parametros de entrada al end-point
+	 * 
+	 * @param codProveedor
+	 * @param numDocumento
+	 * @param year
+	 * @param codSociedad
+	 * @return
+	 */
 	private Long getCodDocumento(Long codProveedor, String numDocumento, int year, Integer codSociedad) {
 
 		Long codDocumento = repository.getCodDocumento(codProveedor, numDocumento, year, codSociedad);
@@ -231,6 +285,12 @@ public class AutofacturaServiceImpl implements AutofacturaService {
 		return codDocumento;
 	}
 
+	/**
+	 * Obtiene los datos con los que cargar la tabla inicial de cabecera del reporte
+	 * 
+	 * @param codDocumento
+	 * @return
+	 */
 	private ParametrosCabeceraDTO getParametrosCabeceraDTO(Long codDocumento) {
 
 		ParametrosCabeceraDTO parametrosCabeceraDTO = parametrosCabeceraMapper
@@ -241,6 +301,12 @@ public class AutofacturaServiceImpl implements AutofacturaService {
 		return parametrosCabeceraDTO;
 	}
 
+	/**
+	 * Obtiene la lista de registros de albaran
+	 * 
+	 * @param codDocumento
+	 * @return
+	 */
 	private List<AlbaranDTO> getLstAlbaranesDTO(Long codDocumento) {
 
 		List<AlbaranDTO> lstDTO = albaranMapper.map(repository.getAlbaranByCodDocumento(codDocumento));
@@ -250,6 +316,12 @@ public class AutofacturaServiceImpl implements AutofacturaService {
 		return lstDTO;
 	}
 
+	/**
+	 * Obtiene la lista de resumentes de tipo de iva
+	 * 
+	 * @param codDocumento
+	 * @return
+	 */
 	private List<ResumenIvaDTO> getLstResumenesIvaDTO(Long codDocumento) {
 
 		List<ResumenIvaDTO> lstDTO = resumenIvaMapper.map(repository.getResumenTiposIvaByCodDocumento(codDocumento));
@@ -259,6 +331,13 @@ public class AutofacturaServiceImpl implements AutofacturaService {
 		return lstDTO;
 	}
 
+	/**
+	 * En base a una lista de resumenes, obtiene el sumatorio total de la factura.
+	 * 
+	 * @param lstResumenesIvaDTO
+	 * @param locale
+	 * @return
+	 */
 	private String getSumTotalFactura(List<ResumenIvaDTO> lstResumenesIvaDTO, Locale locale) {
 
 		Double sumTotalFactura = lstResumenesIvaDTO.stream().mapToDouble(
@@ -274,6 +353,12 @@ public class AutofacturaServiceImpl implements AutofacturaService {
 
 	}
 
+	/**
+	 * Obtiene los datos a mostrar en la tabla de retencion del reporte
+	 * 
+	 * @param codDocumento
+	 * @return
+	 */
 	private RetencionDTO getRetencionDTO(Long codDocumento) {
 
 		RetencionDTO retencionDTO = retencionMapper.map(repository.getRetencionByCodDocumento(codDocumento));
@@ -283,6 +368,12 @@ public class AutofacturaServiceImpl implements AutofacturaService {
 		return retencionDTO;
 	}
 
+	/**
+	 * Obtiene el codigo QR a mostrar en el reporte
+	 * 
+	 * @param codDocumento
+	 * @return
+	 */
 	private InputStream getImagenQrStream(Long codDocumento) {
 
 		Clob imagenQrClob = repository.getImagenQr();

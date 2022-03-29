@@ -8,6 +8,7 @@ import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,10 +27,13 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 /**
+ * Controlador para el servicio que genera la autofactura en formato PDF
+ * 
  * @author BICUGUAL
  *
  */
@@ -42,16 +46,18 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 public class AutofacturaController {
 
 	private static final Logger logger = LoggerFactory.getLogger(AutofacturaController.class);
-	
+
 	@Autowired
 	AutofacturaService service;
 
-	@SuppressWarnings("unused")
 	@Operation(summary = "Obtener autofactura", description = "El servicio obtiene una autofactura en formato PDF")
-	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Autofactura recuperadas", content = {
-			@Content(mediaType = MediaType.APPLICATION_PDF_VALUE) }),
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "OK", content = {
+					@Content(mediaType = MediaType.APPLICATION_PDF_VALUE) }),
+			@ApiResponse(responseCode = "404", description = "Recurso no encontrado", content = {
+					@Content(mediaType = MediaType.APPLICATION_JSON_VALUE , schema = @Schema(implementation = CustomResponseStatusException.class) ) }),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error", content = {
-					@Content(mediaType = "application/json")}) })
+					@Content(mediaType = MediaType.APPLICATION_JSON_VALUE) }) })
 
 	@GetMapping(produces = { MediaType.APPLICATION_PDF_VALUE, MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<byte[]> report(Locale locale,
@@ -60,28 +66,36 @@ public class AutofacturaController {
 			@RequestParam(name = "anno", required = true) Integer year,
 			@RequestParam(name = "codigoSociedad", required = true) Integer codSociedad) {
 
-		logger.info("Entra por la peticion");
-		
+		logger.info("Solicitud de autofactura en formato PDF");
+
 		byte[] autofactura = null;
 
-		String filename  = Utils.fileNameContructor(codProveedor, numDocumento, year).concat(".pdf");
+		String filename = Utils.fileNameContructor(codProveedor, numDocumento, year).concat(".pdf");
 
 		try {
 			autofactura = service.generateJasperReportPDF(locale, codProveedor, numDocumento, year, codSociedad);
-			
-			if (null == autofactura) {
-				return ResponseEntity.notFound().build();
-			}
-
 		} catch (Exception e) {
 			logger.error(e.getClass() + " " + e.getMessage());
-			throw new CustomResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, 500, "Error al consultar autofactura",
-					e);
+			throw new CustomResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, 500,
+					"Error al consultar autofactura", e);
 		}
 
-		return ResponseEntity.ok()
-				.header("Content-Type", "application/pdf; charset=UTF-8")
-				.header("Content-Disposition", "inline; filename="+filename).body(autofactura);
+		
+		//Si la factura no contiene informacion, lanzamos un 404
+		if (null == autofactura) {
+
+			logger.info(
+					"No se han encontrado el recurso para los parametros recibidos:codProveedor={}, numeroDocumento={}, anno={}, codigoSociedad{}",
+					codProveedor, numDocumento, year, codSociedad);
+
+			throw new CustomResponseStatusException(HttpStatus.NOT_FOUND, 404, "No se ha encontrado ninguna factura",
+					new Throwable("Los parametros introducidos no devuelven resultatos"));
+
+			// return ResponseEntity.notFound().build();
+		}
+
+		return ResponseEntity.ok().header("Content-Type", "application/pdf; charset=UTF-8")
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"").body(autofactura);
 	}
 
 }
