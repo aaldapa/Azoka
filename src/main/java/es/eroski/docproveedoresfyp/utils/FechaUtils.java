@@ -24,7 +24,7 @@ public class FechaUtils {
 	public static final String PATTERN_EU_ES = "yyyy/MM/dd";
 
 	/**
-	 * Dada una fecha y una locale, devuelve la fecha formateada a String utilizando el pattern_es_ES
+	 * Dada una fecha y una locale, devuelve la fecha formateada a String utilizando el pattern
 	 * en euskera si la locale es eu_ES y el pattern_eu_ES sino.
 	 * 
 	 * Si la locale informada es null, se utiliza la locale por defecto.
