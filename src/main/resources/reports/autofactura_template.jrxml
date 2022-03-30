@@ -165,17 +165,17 @@
 			<![CDATA[]]>
 		</queryString>
 	</subDataset>
-	<parameter name="parametrosCabecera" class="es.eroski.azoka.dto.ParametrosCabeceraDTO"/>
+	<parameter name="parametrosCabecera" class="es.eroski.docproveedoresfyp.dto.ParametrosCabeceraDTO"/>
 	<parameter name="logoEroskiPath" class="java.lang.Object"/>
-	<parameter name="sociedad" class="es.eroski.azoka.dto.SociedadDTO"/>
-	<parameter name="proveedor" class="es.eroski.azoka.dto.ProveedorDTO"/>
+	<parameter name="sociedad" class="es.eroski.docproveedoresfyp.dto.SociedadDTO"/>
+	<parameter name="proveedor" class="es.eroski.docproveedoresfyp.dto.ProveedorDTO"/>
 	<parameter name="sumaTotalFactura" class="java.lang.String"/>
 	<parameter name="detailTable1Column2" class="java.lang.String"/>
 	<parameter name="detailTable1Column1" class="java.lang.String"/>
 	<parameter name="detailTable1Column3" class="java.lang.String"/>
-	<parameter name="lstResumenesIva" class="java.util.List" nestedType="es.eroski.azoka.dto.ResumenIvaDTO"/>
-	<parameter name="lstAlbaranes" class="java.util.List" nestedType="es.eroski.azoka.dto.AlbaranDTO"/>
-	<parameter name="retencion" class="es.eroski.azoka.dto.RetencionDTO"/>
+	<parameter name="lstResumenesIva" class="java.util.List" nestedType="es.eroski.docproveedoresfyp.dto.ResumenIvaDTO"/>
+	<parameter name="lstAlbaranes" class="java.util.List" nestedType="es.eroski.docproveedoresfyp.dto.AlbaranDTO"/>
+	<parameter name="retencion" class="es.eroski.docproveedoresfyp.dto.RetencionDTO"/>
 	<parameter name="imagenQr" class="java.io.InputStream"/>
 	<queryString>
 		<![CDATA[]]>
