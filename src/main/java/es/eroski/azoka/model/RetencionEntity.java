@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * Representacion de objeto en el que volcar la consulta de retenciones de la BD
  * @author BICUGUAL
  *
  */

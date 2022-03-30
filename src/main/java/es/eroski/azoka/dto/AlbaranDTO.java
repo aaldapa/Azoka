@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * DTO para mostrar la informacion de los albaranes en el reporte
  * @author BICUGUAL
  *
  */

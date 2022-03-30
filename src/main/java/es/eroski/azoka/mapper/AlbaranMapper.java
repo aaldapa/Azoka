@@ -16,6 +16,7 @@ import es.eroski.azoka.utils.FechaUtils;
 import es.eroski.azoka.utils.NumeroUtils;
 
 /**
+ * Mappeo de Entidad a DTO de Albaran
  * @author BICUGUAL
  *
  */

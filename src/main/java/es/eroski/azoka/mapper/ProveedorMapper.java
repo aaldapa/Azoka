@@ -13,6 +13,7 @@ import es.eroski.azoka.model.DireccionYcpProveedorEntity;
 import es.eroski.azoka.model.NombreYNifProveedorEntity;
 
 /**
+ * Mappeo de Entidad a DTO de Proveedor
  * @author BICUGUAL
  *
  */

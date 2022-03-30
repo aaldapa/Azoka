@@ -4,6 +4,7 @@
 package es.eroski.azoka.exceptions;
 
 /**
+ * Excepcion a lanzar cuando no encontramos recurso 
  * @author BICUGUAL
  *
  */

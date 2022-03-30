@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * DTO para mostrar la informacion de los parametros en la primera tabla de la factura
  * @author BICUGUAL
  *
  */

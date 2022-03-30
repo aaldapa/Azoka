@@ -55,6 +55,7 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
 
 /**
+ * Implementacion del servicio
  * @author BICUGUAL
  *
  */

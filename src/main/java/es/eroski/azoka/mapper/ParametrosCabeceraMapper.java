@@ -14,6 +14,7 @@ import es.eroski.azoka.model.ParametrosCabeceraEntity;
 import es.eroski.azoka.utils.FechaUtils;
 
 /**
+ * Mappeo de Entidad a DTO de Parametros de cabecera
  * @author BICUGUAL
  *
  */

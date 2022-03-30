@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * DTO para mostrar la informacion del proveedor en la factura
  * @author BICUGUAL
  *
  */

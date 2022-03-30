@@ -12,6 +12,7 @@ import es.eroski.azoka.dto.SociedadDTO;
 import es.eroski.azoka.model.SociedadEntity;
 
 /**
+ * Mappeo de Entidad a DTO de Sociedad
  * @author BICUGUAL
  *
  */

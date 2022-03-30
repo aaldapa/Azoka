@@ -15,6 +15,7 @@ import es.eroski.azoka.model.ResumenIvaEntity;
 import es.eroski.azoka.utils.NumeroUtils;
 
 /**
+ * Mappeo de Entidad a DTO de Resumen de tipos de iva
  * @author BICUGUAL
  *
  */

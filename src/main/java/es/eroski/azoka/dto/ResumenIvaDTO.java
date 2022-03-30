@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * DTO para mnostrar la informacion de tipos de iva en la factura
  * @author BICUGUAL
  *
  */

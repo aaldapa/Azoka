@@ -6,6 +6,7 @@ package es.eroski.azoka.autofactura.service;
 import java.util.Locale;
 
 /**
+ * Interfaz de servicio para la generacion del reporte de autofacturas
  * @author BICUGUAL
  *
  */

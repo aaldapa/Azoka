@@ -28,6 +28,7 @@ import es.eroski.azoka.model.RetencionEntity;
 import es.eroski.azoka.model.SociedadEntity;
 
 /**
+ * Implementacion de la capa de persistencia
  * @author BICUGUAL
  *
  */

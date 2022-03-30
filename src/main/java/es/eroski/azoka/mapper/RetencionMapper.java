@@ -14,6 +14,7 @@ import es.eroski.azoka.model.RetencionEntity;
 import es.eroski.azoka.utils.NumeroUtils;
 
 /**
+ * Mappeo de Entidad a DTO de retencion
  * @author BICUGUAL
  *
  */

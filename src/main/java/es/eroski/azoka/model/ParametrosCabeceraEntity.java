@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * Representacion de objeto en el que volcar la consulta de facturas de la BD
  * @author BICUGUAL
  *
  */

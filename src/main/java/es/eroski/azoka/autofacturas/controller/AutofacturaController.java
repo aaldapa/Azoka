@@ -92,19 +92,6 @@ public class AutofacturaController {
 		}
 
 		
-		//Si la factura no contiene informacion, lanzamos un 404
-//		if (null == autofactura) {
-//
-//			logger.info(
-//					"No se han encontrado el recurso para los parametros recibidos:codProveedor={}, numeroDocumento={}, anno={}, codigoSociedad{}",
-//					codProveedor, numDocumento, year, codSociedad);
-//
-//			throw new CustomResponseStatusException(HttpStatus.NOT_FOUND, 404, "No se ha encontrado ninguna factura",
-//					new Throwable("Los parametros introducidos no devuelven resultatos"));
-//
-//			// return ResponseEntity.notFound().build();
-//		}
-
 		return ResponseEntity.ok().header("Content-Type", "application/pdf; charset=UTF-8")
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"").body(autofactura);
 	}
