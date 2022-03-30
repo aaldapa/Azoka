@@ -2,7 +2,7 @@
 <configuration>
 	 
 	  <property name="APP_NAME" value="EroskiSpringBoot" />
-	  <property name="COMPONENT_NAME" value="SpringBootExampleApplication" />
+	  <property name="COMPONENT_NAME" value="SpringBootAzokaApplication" />
 	  <property name="LOG_PATTERN" value="[%d{ISO8601}][${hostName}][%p][${APP_NAME}][${COMPONENT_NAME}][%t][${PID}][%c{1.}:%L][%X{userLogin}][%X{iporigen}] %m%n" />
 	  <property name="LOG_PATH" value="/home/app/log/" />
 	 <appender name="Console"

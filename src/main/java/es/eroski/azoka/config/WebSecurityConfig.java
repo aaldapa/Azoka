@@ -18,16 +18,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/swagger-ui*/**").permitAll()
 				/* Con actuator securizado */
 				// .antMatchers("/actuator/**").authenticated()
-//				.antMatchers("/v1/**/").authenticated()
 				.antMatchers("/h2-console/**").permitAll()
 //				.antMatchers("/**").permitAll();
 				.anyRequest().authenticated()
 				.and().sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		;
 
-//		http.authorizeRequests().anyRequest().authenticated()
-//				// httpBasic authentication
-//				.and().httpBasic();
 	}
 }

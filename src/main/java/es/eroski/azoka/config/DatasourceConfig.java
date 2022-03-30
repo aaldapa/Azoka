@@ -23,7 +23,7 @@ import com.zaxxer.hikari.HikariDataSource;
 @EnableJpaRepositories(
 		entityManagerFactoryRef = "primaryEntityManagerFactory",
 		transactionManagerRef = "primaryTransactionManager", 
-		basePackages = {"es.eroski.azoka.alumnomodule.persistence", 
+		basePackages = {"es.eroski.azoka.autofacturas.persistence", 
 						"es.eroski.azoka.config" })
 
 
