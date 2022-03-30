@@ -34,6 +34,7 @@ import es.eroski.azoka.dto.ProveedorDTO;
 import es.eroski.azoka.dto.ResumenIvaDTO;
 import es.eroski.azoka.dto.RetencionDTO;
 import es.eroski.azoka.dto.SociedadDTO;
+import es.eroski.azoka.exceptions.AutofacturaNotFoundException;
 import es.eroski.azoka.mapper.AlbaranMapper;
 import es.eroski.azoka.mapper.ParametrosCabeceraMapper;
 import es.eroski.azoka.mapper.ProveedorMapper;
@@ -103,38 +104,32 @@ public class AutofacturaServiceImpl implements AutofacturaService {
 		Map<String, Object> parameters = this.getReportParameters(locale, codProveedor, numDocumento, year,
 				codSociedad);
 
-		if (null != parameters) {
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		// Poner en contexto las fuentes embebidas
+		JasperUtils.setJasperReportsContext();
 
-			// Poner en contexto las fuentes embebidas
-			JasperUtils.setJasperReportsContext();
+		try {
+			// Obtener reporte compilado
+			JasperReport reportMain = JasperUtils.reportCompile(jrxmlTemplatePath);
 
-			try {
-				// Obtener reporte compilado
-				JasperReport reportMain = JasperUtils.reportCompile(jrxmlTemplatePath);
+			// Generar el reporte
+			JasperPrint jasperPrint = JasperFillManager.fillReport(reportMain, parameters, new JREmptyDataSource());
 
-				// Generar el reporte
-				JasperPrint jasperPrint = JasperFillManager.fillReport(reportMain, parameters, new JREmptyDataSource());
+			// Obtener configuracion para la exportacion del reporte
+			SimplePdfExporterConfiguration exportConfig = JasperUtils.getPdfExporterConfiguration(locale, iccPath,
+					env.getProperty("report.pdf.metadata.autor"),
+					Utils.fileNameContructor(codProveedor, numDocumento, year));
 
-				// Obtener configuracion para la exportacion del reporte
-				SimplePdfExporterConfiguration exportConfig = JasperUtils.getPdfExporterConfiguration(locale, iccPath,
-						env.getProperty("report.pdf.metadata.autor"),
-						Utils.fileNameContructor(codProveedor, numDocumento, year));
+			// Exportar el reporte
+			JasperUtils.exportarPDF(jasperPrint, outputStream, exportConfig);
 
-				// Exportar el reporte
-				JasperUtils.exportarPDF(jasperPrint, outputStream, exportConfig);
-
-			} catch (FileNotFoundException | JRException e) {
-				logger.error(e);
-				e.printStackTrace();
-			}
-
-			return outputStream.toByteArray();
-
+		} catch (FileNotFoundException | JRException e) {
+			logger.error(e);
+			e.printStackTrace();
 		}
 
-		return null;
+		return outputStream.toByteArray();
 
 	}
 
@@ -182,13 +177,13 @@ public class AutofacturaServiceImpl implements AutofacturaService {
 			// Tabla 5
 			parameters.put("retencion", this.getRetencionDTO(codDocumento));
 
-			//qr
+			// qr
 			parameters.put("imagenQr", this.getImagenQrStream(codDocumento));
 
 			return parameters;
+		} else {
+			throw new AutofacturaNotFoundException("Los parametros introducidos no devuelven resultatos");
 		}
-
-		return null;
 
 	}
 

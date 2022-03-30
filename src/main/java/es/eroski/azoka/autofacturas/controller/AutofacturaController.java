@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.eroski.azoka.autofactura.service.AutofacturaService;
+import es.eroski.azoka.exceptions.AutofacturaNotFoundException;
 import es.eroski.azoka.exceptions.CustomResponseStatusException;
 import es.eroski.azoka.utils.Utils;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
@@ -74,7 +75,17 @@ public class AutofacturaController {
 
 		try {
 			autofactura = service.generateJasperReportPDF(locale, codProveedor, numDocumento, year, codSociedad);
-		} catch (Exception e) {
+		} 
+		catch (AutofacturaNotFoundException e) {
+			logger.info(
+					"No se ha encontrado ningun recurso para los parametros recibidos:codProveedor={}, numeroDocumento={}, anno={}, codigoSociedad{}",
+					codProveedor, numDocumento, year, codSociedad);
+
+			throw new CustomResponseStatusException(HttpStatus.NOT_FOUND, 404, "No se ha encontrado ninguna factura",
+					new Throwable(e.getMessage()));
+
+		}
+		catch (Exception e) {
 			logger.error(e.getClass() + " " + e.getMessage());
 			throw new CustomResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, 500,
 					"Error al consultar autofactura", e);
@@ -82,17 +93,17 @@ public class AutofacturaController {
 
 		
 		//Si la factura no contiene informacion, lanzamos un 404
-		if (null == autofactura) {
-
-			logger.info(
-					"No se han encontrado el recurso para los parametros recibidos:codProveedor={}, numeroDocumento={}, anno={}, codigoSociedad{}",
-					codProveedor, numDocumento, year, codSociedad);
-
-			throw new CustomResponseStatusException(HttpStatus.NOT_FOUND, 404, "No se ha encontrado ninguna factura",
-					new Throwable("Los parametros introducidos no devuelven resultatos"));
-
-			// return ResponseEntity.notFound().build();
-		}
+//		if (null == autofactura) {
+//
+//			logger.info(
+//					"No se han encontrado el recurso para los parametros recibidos:codProveedor={}, numeroDocumento={}, anno={}, codigoSociedad{}",
+//					codProveedor, numDocumento, year, codSociedad);
+//
+//			throw new CustomResponseStatusException(HttpStatus.NOT_FOUND, 404, "No se ha encontrado ninguna factura",
+//					new Throwable("Los parametros introducidos no devuelven resultatos"));
+//
+//			// return ResponseEntity.notFound().build();
+//		}
 
 		return ResponseEntity.ok().header("Content-Type", "application/pdf; charset=UTF-8")
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"").body(autofactura);

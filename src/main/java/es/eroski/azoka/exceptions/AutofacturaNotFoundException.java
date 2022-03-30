@@ -8,11 +8,11 @@ package es.eroski.azoka.exceptions;
  *
  */
 
-public class AutofacturaException extends RuntimeException {
+public class AutofacturaNotFoundException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
-	public AutofacturaException(String message) {
+	public AutofacturaNotFoundException(String message) {
 	    super(message);
 	  }
 }
