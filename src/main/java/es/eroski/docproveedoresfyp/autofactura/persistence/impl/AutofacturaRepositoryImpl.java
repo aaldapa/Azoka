@@ -20,6 +20,7 @@ import org.springframework.stereotype.Repository;
 
 import es.eroski.docproveedoresfyp.autofactura.persistence.AutofacturaRepository;
 import es.eroski.docproveedoresfyp.model.AlbaranEntity;
+import es.eroski.docproveedoresfyp.model.CodigoQrEntity;
 import es.eroski.docproveedoresfyp.model.DireccionYcpProveedorEntity;
 import es.eroski.docproveedoresfyp.model.NombreYNifProveedorEntity;
 import es.eroski.docproveedoresfyp.model.ParametrosCabeceraEntity;
@@ -265,6 +266,25 @@ public class AutofacturaRepositoryImpl implements AutofacturaRepository {
 		}
 	}
 
+	@Override
+	public CodigoQrEntity getCodigoQr(Long codDocumento) {
+		codDocumento = Long.valueOf(0);
+		
+		String sql = "SELECT cod_doc_cot, imagen_qr, idtbai  FROM cab_doc_cot_provr WHERE cod_doc_cot = ?";
+		
+		try {
+			logger.info("getCodigoQr [SQL] [{}] Params: [{}] : ", sql.toString(), codDocumento);
+			
+			return  jdbcTemplate.queryForObject(sql, new CodigoQrMapper(), codDocumento);
+		
+		} catch (DataAccessException e) {
+			logger.error(e);
+
+			return null;
+		}
+	}
+
+	
 	private class NombreYNifProvBdMapper implements RowMapper<NombreYNifProveedorEntity> {
 
 		public NombreYNifProveedorEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -379,25 +399,11 @@ public class AutofacturaRepositoryImpl implements AutofacturaRepository {
 	}
 	
 	
-	
-	private class Mapper implements RowMapper<Clob> {
-
-		public Clob mapRow(ResultSet rs, int rowNum) throws SQLException {
-			return rs.getClob(1);
-		}
-
-	}
-
-	@Override
-	public Clob getImagenQr() throws DataAccessException {
-
-		String sql = "SELECT imagen_qr " + " from cab_fact_rfact where cod_cab_fact_rfact = 8756753 ";
-		try {
-			Clob clob = jdbcTemplate.queryForObject(sql, new Mapper());
-			return clob;
-		} catch (DataAccessException e) {
-
-			throw e;
+	private class CodigoQrMapper implements RowMapper<CodigoQrEntity> {
+		public CodigoQrEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
+			CodigoQrEntity item = new CodigoQrEntity(rs.getString("idtbai"), rs.getClob("imagen_qr"));
+			
+			return item;
 		}
 
 	}

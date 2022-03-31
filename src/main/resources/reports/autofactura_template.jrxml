@@ -176,7 +176,7 @@
 	<parameter name="lstResumenesIva" class="java.util.List" nestedType="es.eroski.docproveedoresfyp.dto.ResumenIvaDTO"/>
 	<parameter name="lstAlbaranes" class="java.util.List" nestedType="es.eroski.docproveedoresfyp.dto.AlbaranDTO"/>
 	<parameter name="retencion" class="es.eroski.docproveedoresfyp.dto.RetencionDTO"/>
-	<parameter name="imagenQr" class="java.io.InputStream"/>
+	<parameter name="qr" class="es.eroski.docproveedoresfyp.dto.CodigoQrDTO"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -795,18 +795,23 @@
 		</band>
 	</pageFooter>
 	<lastPageFooter>
-		<band height="126">
+		<band height="199">
 			<textField>
-				<reportElement mode="Opaque" x="0" y="96" width="555" height="30" uuid="c4a8517d-c8d3-47b7-b7e5-cc5c6d20d932"/>
+				<reportElement mode="Opaque" x="0" y="166" width="555" height="30" uuid="c4a8517d-c8d3-47b7-b7e5-cc5c6d20d932"/>
 				<textFieldExpression><![CDATA[$R{footer.p1}]]></textFieldExpression>
 			</textField>
 			<image>
-				<reportElement mode="Opaque" x="235" y="10" width="84" height="80" uuid="61c8bad5-1d97-44d7-ae0d-623acef4ce37"/>
-				<imageExpression><![CDATA[$P{imagenQr}]]></imageExpression>
+				<reportElement mode="Opaque" x="235" y="51" width="84" height="80" uuid="8d4768ff-227a-4d76-b6e2-d123d7357be9"/>
+				<imageExpression><![CDATA[$P{qr}.getImagenQr()]]></imageExpression>
 			</image>
+			<textField isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="0" y="29" width="555" height="20" uuid="525c771f-2386-46aa-bc1a-bc4b58937270"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{qr}.getIdTbai()]]></textFieldExpression>
+			</textField>
 		</band>
 	</lastPageFooter>
 	<summary>
-		<band height="78" splitType="Stretch"/>
+		<band height="79" splitType="Stretch"/>
 	</summary>
 </jasperReport>

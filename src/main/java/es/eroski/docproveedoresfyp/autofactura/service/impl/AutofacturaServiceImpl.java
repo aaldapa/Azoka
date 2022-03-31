@@ -29,6 +29,7 @@ import org.springframework.util.ResourceUtils;
 import es.eroski.docproveedoresfyp.autofactura.persistence.AutofacturaRepository;
 import es.eroski.docproveedoresfyp.autofactura.service.AutofacturaService;
 import es.eroski.docproveedoresfyp.dto.AlbaranDTO;
+import es.eroski.docproveedoresfyp.dto.CodigoQrDTO;
 import es.eroski.docproveedoresfyp.dto.ParametrosCabeceraDTO;
 import es.eroski.docproveedoresfyp.dto.ProveedorDTO;
 import es.eroski.docproveedoresfyp.dto.ResumenIvaDTO;
@@ -36,11 +37,13 @@ import es.eroski.docproveedoresfyp.dto.RetencionDTO;
 import es.eroski.docproveedoresfyp.dto.SociedadDTO;
 import es.eroski.docproveedoresfyp.exceptions.AutofacturaNotFoundException;
 import es.eroski.docproveedoresfyp.mapper.AlbaranMapper;
+import es.eroski.docproveedoresfyp.mapper.CodigoQrMapper;
 import es.eroski.docproveedoresfyp.mapper.ParametrosCabeceraMapper;
 import es.eroski.docproveedoresfyp.mapper.ProveedorMapper;
 import es.eroski.docproveedoresfyp.mapper.ResumenIvaMapper;
 import es.eroski.docproveedoresfyp.mapper.RetencionMapper;
 import es.eroski.docproveedoresfyp.mapper.SociedadMapper;
+import es.eroski.docproveedoresfyp.model.CodigoQrEntity;
 import es.eroski.docproveedoresfyp.model.DireccionYcpProveedorEntity;
 import es.eroski.docproveedoresfyp.model.NombreYNifProveedorEntity;
 import es.eroski.docproveedoresfyp.utils.JasperUtils;
@@ -179,9 +182,10 @@ public class AutofacturaServiceImpl implements AutofacturaService {
 			parameters.put("retencion", this.getRetencionDTO(codDocumento));
 
 			// qr
-			parameters.put("imagenQr", this.getImagenQrStream(codDocumento));
-
+			parameters.put("qr", this.getCodigoQr(codDocumento)); 
+			
 			return parameters;
+			
 		} else {
 			throw new AutofacturaNotFoundException("Los parametros introducidos no devuelven resultatos");
 		}
@@ -370,33 +374,19 @@ public class AutofacturaServiceImpl implements AutofacturaService {
 		return retencionDTO;
 	}
 
+
 	/**
-	 * Obtiene el codigo QR a mostrar en el reporte
-	 * 
+	 * Obtiene el codigo Qr y el tbai para mostrarlo en el reporte
 	 * @param codDocumento
 	 * @return
 	 */
-	private InputStream getImagenQrStream(Long codDocumento) {
-
-		Clob imagenQrClob = repository.getImagenQr();
-		String imagenQrStr = null;
-		InputStream imagenQrStream = null;
-		try {
-
-			imagenQrStr = imagenQrClob.getSubString(1, (int) imagenQrClob.length());
-			imagenQrStream = new ByteArrayInputStream(
-					org.apache.tomcat.util.codec.binary.Base64.decodeBase64(imagenQrStr.getBytes()));
-
-			return imagenQrStream;
-
-		} catch (SQLException e) {
-
-			e.printStackTrace();
-			logger.error(e);
-
-			return null;
-		}
-
+	private CodigoQrDTO getCodigoQr(Long codDocumento) {
+		
+		CodigoQrDTO dto = CodigoQrMapper.INSTANCE.map(repository.getCodigoQr(codDocumento));
+		
+		logger.info("Datos de codigoQr: {}", dto);
+		
+		return dto; 
 	}
 
 }

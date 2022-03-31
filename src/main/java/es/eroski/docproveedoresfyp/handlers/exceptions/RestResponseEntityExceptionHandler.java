@@ -3,7 +3,9 @@ package es.eroski.docproveedoresfyp.handlers.exceptions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -40,7 +42,11 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 		} catch (JsonProcessingException e) {
 			logger.error(e.getMessage());
 		}
-        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), ((CustomResponseStatusException)ex).getStatus(), request);
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        
+        return handleExceptionInternal(ex, bodyOfResponse, headers, ((CustomResponseStatusException)ex).getStatus(), request);
     }
     
    

@@ -3,12 +3,12 @@
  */
 package es.eroski.docproveedoresfyp.autofactura.persistence;
 
-import java.sql.Clob;
 import java.util.List;
 
 import org.springframework.dao.DataAccessException;
 
 import es.eroski.docproveedoresfyp.model.AlbaranEntity;
+import es.eroski.docproveedoresfyp.model.CodigoQrEntity;
 import es.eroski.docproveedoresfyp.model.DireccionYcpProveedorEntity;
 import es.eroski.docproveedoresfyp.model.NombreYNifProveedorEntity;
 import es.eroski.docproveedoresfyp.model.ParametrosCabeceraEntity;
@@ -88,9 +88,9 @@ public interface AutofacturaRepository {
 	public RetencionEntity getRetencionByCodDocumento(Long codDocumento);
 
 	/**
-	 * Devuelve el codigo Qr de la factura
+	 * Devuelve los datos de codigo Qr de la factura
+	 * @param codDocumento
 	 * @return
-	 * @throws DataAccessException
 	 */
-	public Clob getImagenQr() throws DataAccessException;
+	public CodigoQrEntity getCodigoQr(Long codDocumento);
 }
