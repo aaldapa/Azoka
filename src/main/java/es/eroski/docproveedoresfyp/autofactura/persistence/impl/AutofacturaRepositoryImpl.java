@@ -3,7 +3,6 @@
  */
 package es.eroski.docproveedoresfyp.autofactura.persistence.impl;
 
-import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -268,7 +267,6 @@ public class AutofacturaRepositoryImpl implements AutofacturaRepository {
 
 	@Override
 	public CodigoQrEntity getCodigoQr(Long codDocumento) {
-		codDocumento = Long.valueOf(0);
 		
 		String sql = "SELECT cod_doc_cot, imagen_qr, idtbai  FROM cab_doc_cot_provr WHERE cod_doc_cot = ?";
 		
@@ -397,8 +395,7 @@ public class AutofacturaRepositoryImpl implements AutofacturaRepository {
 		}
 		
 	}
-	
-	
+		
 	private class CodigoQrMapper implements RowMapper<CodigoQrEntity> {
 		public CodigoQrEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
 			CodigoQrEntity item = new CodigoQrEntity(rs.getString("idtbai"), rs.getClob("imagen_qr"));

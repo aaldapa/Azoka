@@ -3,15 +3,11 @@
  */
 package es.eroski.docproveedoresfyp.autofactura.service.impl;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
-import java.sql.Clob;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -43,7 +39,6 @@ import es.eroski.docproveedoresfyp.mapper.ProveedorMapper;
 import es.eroski.docproveedoresfyp.mapper.ResumenIvaMapper;
 import es.eroski.docproveedoresfyp.mapper.RetencionMapper;
 import es.eroski.docproveedoresfyp.mapper.SociedadMapper;
-import es.eroski.docproveedoresfyp.model.CodigoQrEntity;
 import es.eroski.docproveedoresfyp.model.DireccionYcpProveedorEntity;
 import es.eroski.docproveedoresfyp.model.NombreYNifProveedorEntity;
 import es.eroski.docproveedoresfyp.utils.JasperUtils;

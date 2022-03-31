@@ -38,7 +38,7 @@ public class FechaUtils {
 
 		if (null != date) {
 
-			//Si la locale es nula o no es ni español o euskera me quedo con la locale por defecto
+			//Si la locale es nula o no es ni castellano o euskera me quedo con la locale por defecto
 			if (null == locale
 					|| (null != locale && (!"eu".equals(locale.getLanguage()) && !"es".equals(locale.getLanguage())) ) ) {
 
