@@ -126,6 +126,8 @@ public class AutofacturaServiceImpl implements AutofacturaService {
 		} catch (FileNotFoundException | JRException e) {
 			logger.error(e);
 			e.printStackTrace();
+		} catch (Exception e) {
+			logger.error(e);
 		}
 
 		return outputStream.toByteArray();
@@ -219,7 +221,6 @@ public class AutofacturaServiceImpl implements AutofacturaService {
 
 		} catch (IOException e) {
 			logger.error(e);
-			e.printStackTrace();
 		}
 
 		return fileContent;
