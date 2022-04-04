@@ -77,16 +77,17 @@ public class JasperUtils {
 		exportConfig.setMetadataAuthor(autor);
 		exportConfig.setDisplayMetadataTitle(Boolean.TRUE);
 		exportConfig.setMetadataTitle(titulo);
-		exportConfig.setMetadataCreator("EL CREADOR");
-		exportConfig.setMetadataSubject("EL SUBJETC");
+		exportConfig.setCompressed(Boolean.TRUE);
+//		exportConfig.setMetadataCreator("EL CREADOR");
+//		exportConfig.setMetadataSubject("EL SUBJETC");
 
 		File iccFile = ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX.concat(iccPath));
 
 		exportConfig.setIccProfilePath(iccFile.getAbsolutePath());
 		exportConfig.setPdfaConformance(PdfaConformanceEnum.PDFA_1A);
 
-		exportConfig.setPdfVersion(PdfVersionEnum.VERSION_1_2);
-		exportConfig.setMetadataKeywords("keyword, metadata");
+//		exportConfig.setPdfVersion(PdfVersionEnum.VERSION_1_2);
+//		exportConfig.setMetadataKeywords("keyword, metadata");
 
 		return exportConfig;
 	}

@@ -37,7 +37,7 @@ public interface AlbaranMapper {
 				.denomInforme(entity.getDenomInforme())
 				.baseImp(NumeroUtils.formatNumberToStringByLocale(entity.getBaseImp(),locale))
 				.tipoIva(NumeroUtils.formatNumberToStringByLocale(entity.getTipoIva(),locale))
-				.cuotaIva(NumeroUtils.formatNumberToStringByLocale(entity.getCuotaIva(),locale, 4,2))
+				.cuotaIva(NumeroUtils.formatNumberToStringByLocale(entity.getCuotaIva(),locale))
 				.importeTotal(NumeroUtils.formatNumberToStringByLocale(entity.getImporteTotal(), locale))
 				.build();
 	}
