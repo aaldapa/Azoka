@@ -5,9 +5,13 @@ package es.eroski.docproveedoresfyp.utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Locale;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.ResourceUtils;
 
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
@@ -21,7 +25,6 @@ import net.sf.jasperreports.engine.util.JRSaver;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
-import net.sf.jasperreports.export.type.PdfVersionEnum;
 import net.sf.jasperreports.export.type.PdfaConformanceEnum;
 
 /**
@@ -30,7 +33,6 @@ import net.sf.jasperreports.export.type.PdfaConformanceEnum;
  */
 public class JasperUtils {
 
-	
 	public static void setJasperReportsContext() {
 		JasperReportsContext jasperReportsContext = DefaultJasperReportsContext.getInstance();
 
@@ -44,12 +46,15 @@ public class JasperUtils {
 	 * 
 	 * @param jrxmlTemplatePath
 	 * @return
-	 * @throws FileNotFoundException
 	 * @throws JRException
+	 * @throws IOException 
 	 */
-	public static JasperReport reportCompile(String jrxmlTemplatePath) throws FileNotFoundException, JRException {
+	public static JasperReport reportCompile(String jrxmlTemplatePath) throws JRException, IOException {
 
-		File reportMainTemplate = ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX.concat(jrxmlTemplatePath));
+		
+		File reportMainTemplate = new ClassPathResource(ResourceUtils.CLASSPATH_URL_PREFIX.concat(jrxmlTemplatePath)).getFile();
+		
+		//File reportMainTemplate =  ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX.concat(jrxmlTemplatePath));
 
 		// Compilar
 		JasperReport reportMain = JasperCompileManager.compileReport(reportMainTemplate.getAbsolutePath());
@@ -65,10 +70,10 @@ public class JasperUtils {
 	 * @param locale
 	 * @param iccPath
 	 * @return
-	 * @throws FileNotFoundException
+	 * @throws IOException 
 	 */
 	public static SimplePdfExporterConfiguration getPdfExporterConfiguration(Locale locale, String iccPath, String autor, String titulo)
-			throws FileNotFoundException {
+			throws IOException {
 
 		SimplePdfExporterConfiguration exportConfig = new SimplePdfExporterConfiguration();
 
@@ -81,8 +86,9 @@ public class JasperUtils {
 //		exportConfig.setMetadataCreator("EL CREADOR");
 //		exportConfig.setMetadataSubject("EL SUBJETC");
 
-		File iccFile = ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX.concat(iccPath));
-
+//		File iccFile = ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX.concat(iccPath));
+		
+		File iccFile = new ClassPathResource(iccPath).getFile();  
 		exportConfig.setIccProfilePath(iccFile.getAbsolutePath());
 		exportConfig.setPdfaConformance(PdfaConformanceEnum.PDFA_1A);
 

@@ -4,10 +4,9 @@
 package es.eroski.docproveedoresfyp.autofactura.jasper.impl;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -20,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 
@@ -32,10 +33,12 @@ import es.eroski.docproveedoresfyp.utils.Utils;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
+import net.sf.jasperreports.export.type.PdfaConformanceEnum;
 
 /**
  * @author BICUGUAL
@@ -61,7 +64,8 @@ public class JasperManagerServiceImpl implements JasperManagerService{
 	@Autowired
 	AutofacturaService autoFacturaService;
 	
-	
+	@Autowired
+	ResourceLoader resourceLoader;
 	
 	@Override
 	public byte[] getAutofacturaReport(Long codProveedor, String numDocumento, Integer year,
@@ -81,13 +85,13 @@ public class JasperManagerServiceImpl implements JasperManagerService{
 
 		try {
 			// Obtener reporte compilado
-			JasperReport reportMain = JasperUtils.reportCompile(jrxmlTemplatePath);
+			JasperReport reportMain = this.reportCompile(jrxmlTemplatePath);
 
 			// Generar el reporte
 			JasperPrint jasperPrint = JasperFillManager.fillReport(reportMain, parameters, new JREmptyDataSource());
 
 			// Obtener configuracion para la exportacion del reporte
-			SimplePdfExporterConfiguration exportConfig = JasperUtils.getPdfExporterConfiguration(locale, iccPath,
+			SimplePdfExporterConfiguration exportConfig = this.getPdfExporterConfiguration(locale, iccPath,
 					env.getProperty("report.pdf.metadata.autor"),
 					Utils.fileNameContructor(codProveedor, numDocumento, year));
 
@@ -161,6 +165,26 @@ public class JasperManagerServiceImpl implements JasperManagerService{
 
 	}
 
+	/**
+	 * Compila el template y guarda el objeto compilado y lo retorna
+	 * 
+	 * @param jrxmlTemplatePath
+	 * @return
+	 * @throws JRException
+	 * @throws IOException 
+	 */
+	public JasperReport reportCompile(String jrxmlTemplatePath) throws JRException, IOException {
+
+		InputStream reportMainTemplate = resourceLoader.getResource("classpath:"+jrxmlTemplatePath).getInputStream();
+		
+		// Compilar
+		JasperReport reportMain = JasperCompileManager.compileReport(reportMainTemplate);
+
+		// Guardar el compilado
+//		JRSaver.saveObject(reportMain, reportMainTemplate.getAbsolutePath().replace("jrxml", "jasper"));
+
+		return reportMain;
+	}
 
 	/**
 	 * Obtiene la imagen del logotipo de Eroski almacenada en los recursos del
@@ -178,8 +202,7 @@ public class JasperManagerServiceImpl implements JasperManagerService{
 	 */
 	private byte[] getLogoEroski(Locale locale) {
 
-		File logoEroski;
-		byte[] fileContent = null;
+		byte[] logoEroski = null;
 
 		try {
 			String idiomaLogo = "es";
@@ -188,16 +211,53 @@ public class JasperManagerServiceImpl implements JasperManagerService{
 				idiomaLogo = "eu";
 			}
 			
-			logoEroski = ResourceUtils.getFile(
-					ResourceUtils.CLASSPATH_URL_PREFIX.concat(logoEroskiPath.replace("xx", idiomaLogo)));
-			fileContent = Files.readAllBytes(logoEroski.toPath());
+			Resource resource = resourceLoader.getResource(ResourceUtils.CLASSPATH_URL_PREFIX.concat(logoEroskiPath.replace("xx", idiomaLogo)));
+		
+			logoEroski = resource.getInputStream().readAllBytes();
 
 		} catch (IOException e) {
 			logger.error(e);
 		}
 
-		return fileContent;
+		return logoEroski;
 
+	}
+	
+	
+	/**
+	 * 
+	 * @param locale
+	 * @param iccPath
+	 * @return
+	 * @throws IOException 
+	 */
+	public SimplePdfExporterConfiguration getPdfExporterConfiguration(Locale locale, String iccPath, String autor, String titulo)
+			throws IOException {
+
+		SimplePdfExporterConfiguration exportConfig = new SimplePdfExporterConfiguration();
+
+		exportConfig.setTagged(true);
+		exportConfig.setTagLanguage(locale.getLanguage());
+		exportConfig.setMetadataAuthor(autor);
+		exportConfig.setDisplayMetadataTitle(Boolean.TRUE);
+		exportConfig.setMetadataTitle(titulo);
+		exportConfig.setCompressed(Boolean.TRUE);
+//		exportConfig.setMetadataCreator("EL CREADOR");
+//		exportConfig.setMetadataSubject("EL SUBJETC");
+
+//		File iccFile = ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX.concat(iccPath));
+//		Resource resource = resourceLoader.getResource(ResourceUtils.CLASSPATH_URL_PREFIX.concat(iccPath));
+//		logger.info(resource.getURI());
+//		logger.info(resource.getURL());
+		
+		
+		exportConfig.setIccProfilePath(ResourceUtils.CLASSPATH_URL_PREFIX.concat(iccPath));
+		exportConfig.setPdfaConformance(PdfaConformanceEnum.PDFA_1A);
+
+//		exportConfig.setPdfVersion(PdfVersionEnum.VERSION_1_2);
+//		exportConfig.setMetadataKeywords("keyword, metadata");
+
+		return exportConfig;
 	}
 	
 }

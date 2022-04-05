@@ -9,8 +9,8 @@
 	<version>1.0</version>
 	<packaging>jar</packaging>
 
-	<name>EroskiSpringBoot</name>
-	<description>Spring Boot Archetype Eroski</description>
+	<name>Azoka</name>
+	<description>Exportacion a pdf de las autofacturas de proveedores</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -198,7 +198,7 @@
 	</dependencyManagement>
 
 	<build>
-		<finalName>${project.artifactId}</finalName>
+		<!-- <finalName>${project.artifactId}</finalName> -->
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -215,6 +215,7 @@
 					<execution>
 						<goals>
 							<goal>build-info</goal>
+							<!-- <goal>repackage</goal> -->
 						</goals>
 					</execution>
 				</executions>
@@ -251,19 +252,39 @@
 						<configuration>
 							<outputDirectory>${basedir}/target</outputDirectory>
 							<resources>
+								<!-- <resource> -->
+								<!-- <directory>src/main/resources</directory> -->
+								<!-- <includes> -->
+								<!-- <include>*.properties</include> -->
+								<!-- <include>*.xml</include> -->
+								<!-- </includes> -->
+								<!-- <filtering>true</filtering> -->
+								<!-- </resource> -->
 								<resource>
 									<directory>src/main/resources</directory>
 									<includes>
 										<include>*.properties</include>
 										<include>*.xml</include>
+<!-- 										<include>images/*.svg</include> -->
 									</includes>
 									<filtering>true</filtering>
 								</resource>
+								<resource>
+									<directory>src/main/resources</directory>
+									<includes>
+<!-- 										<include>**/*.properties</include> -->
+<!-- 										<include>**/*.svg</include> -->
+<!-- 										<include>**/*.jrxml</include> -->
+										<include>**/*.icc</include>
+									</includes>
+								</resource>
+								
 							</resources>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
+
 		</plugins>
 	</build>
 </project>
